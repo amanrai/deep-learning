@@ -5,8 +5,7 @@ import torch
 import torch.nn.functional as F
 import numpy as np
 
-from Attentions import DynamicCoAttention as DynamicCoAttention
-from Attentions import biDAF as biDAF
+from QA_Attentions import *
 
 dims = 11
 docs = torch.Tensor(np.random.uniform(0, 1, (2, 10, dims)))
@@ -23,3 +22,8 @@ print(cd.size(), cq.size(), att_d.size(), att_q.size())
 v, ad2q, aq2d = biDAF(docs, queries, wd)
 
 print(v.size(), ad2q.size(), aq2d.size())
+
+inner_att_w = torch.Tensor(np.random.uniform(0, 1, (11, 22)))
+q = InnerAttention(docs, inner_att_w)
+
+print(q.size())

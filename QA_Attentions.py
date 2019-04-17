@@ -63,3 +63,20 @@ def biDAF(docs, queries, wd):
     v = torch.cat([docs, ad2q, ad2q*docs, aq2d*docs], dim=-1) #(b, dt, 4*dim)
     
     return v, att_d2q, att_q2d.transpose(-2,-1)
+
+
+def InnerAttention(matrix, att_weights):
+    """
+        http://people.cs.vt.edu/mingzhu/papers/conf/www2019.pdf
+
+        :param docs: (b, t, dim)
+        :param att_weights: (dim, att_dim)
+        
+        :output qv: (b, 1, dim)
+    """
+
+    
+    _m = torch.tanh(torch.matmul(matrix, att_weights))
+    _m = torch.matmul(_m, att_weights.transpose(1,0))
+    _m = F.softmax(_m, dim=1)
+    return torch.sum(_m * matrix, dim=1)
