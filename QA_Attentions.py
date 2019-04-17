@@ -71,7 +71,7 @@ def InnerAttention(matrix, att_weights):
     """
         http://people.cs.vt.edu/mingzhu/papers/conf/www2019.pdf
 
-        :param docs: (b, t, dim)
+        :param matrix: (b, t, dim)
         :param att_weights: (dim, att_dim)
         
         :output qv: (b, 1, dim)
