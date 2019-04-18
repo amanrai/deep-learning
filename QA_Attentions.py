@@ -77,7 +77,6 @@ def InnerAttention(matrix, att_weights):
         :output qv: (b, 1, dim)
     """
 
-    
     _m = torch.tanh(torch.matmul(matrix, att_weights))
     _m = torch.matmul(_m, att_weights.transpose(1,0))
     _m = F.softmax(_m, dim=1)
