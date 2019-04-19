@@ -1,3 +1,5 @@
+#Aman Rai, April 2019. 
+
 import numpy as np
 import torch
 import torch.nn.functional as F
@@ -21,8 +23,8 @@ class FaVer(torch.nn.Module):
     def forward(self, t, s, a):
         """
             :param t: (b, t) #text -> [CLS] <claim> [SEP] <evid> [SEP] <[PAD]>
-            :param s: (b, s) #text -> <claim> = 0 [SEP] <evid> = 1
-            :param a: (b, a) #text -> t = 1; [PAD] = 0
+            :param s: (b, s) #text semgents -> <claim> = 0 [SEP] <evid> = 1
+            :param a: (b, a) #text attention mask-> t = 1; [PAD] = 0
 
             :output _f: (b,1) #sigmoid has not been applied. 
         """

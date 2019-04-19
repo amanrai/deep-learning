@@ -1,3 +1,5 @@
+#Aman Rai, April 2019. 
+
 import numpy as np
 import torch
 import torch.nn.functional as F
@@ -25,13 +27,13 @@ class ReFE(torch.nn.Module):
     
     def forward(self, dt, ds, da, qt, qs, qa):
         """
-            :param dt: (b, t) #text -> [CLS] <evid> <[PAD]>
-            :param ds: (b, s) #text -> <evid> = 0
-            :param da: (b, a) #text -> <evid> = 1; [PAD] = 0
+            :param dt: (b, t) #evidence -> [CLS] <evid> <[PAD]>
+            :param ds: (b, s) #evidence_segments -> <evid> = 0
+            :param da: (b, a) #evidence_attention_mask -> <evid> = 1; [PAD] = 0
 
-            :param qt: (b, t) #text -> [CLS] <claim> <[PAD]>
-            :param qs: (b, s) #text -> <claim> = 0 
-            :param qa: (b, a) #text -> <claim> = 1; [PAD] = 0
+            :param qt: (b, t) #query -> [CLS] <claim> <[PAD]>
+            :param qs: (b, s) #query_segments -> <claim> = 0 
+            :param qa: (b, a) #query_attention_mask -> <claim> = 1; [PAD] = 0
 
             :output _f: (b,1) #sigmoid has not been applied. 
         """
