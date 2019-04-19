@@ -1,0 +1,28 @@
+{   
+    "bert-model":"bert-base-uncased",
+    "ReFE":{
+        "comments":[
+            "Relevant Fact Extraction Network"
+        ],
+        "positive_sample_divisor": 2,
+        "innerAttentionWidth":512,
+        "epochs":10, 
+        "batches_per_epoch":1000,
+        "bs":64,
+        "fp16":false,
+        "max_len_claims":30,
+        "max_len_evidences":60
+    },
+    "FaVer":{
+        "comments":[
+            "Fact Verification Network"
+        ],
+        "negative_sample_divisor":2,
+        "innerAttentionWidth":512,
+        "epochs":5,
+        "batches_per_epoch":1000,
+        "bs":16,
+        "max_len_claim":30,
+        "max_total_len":512
+    }
+}
