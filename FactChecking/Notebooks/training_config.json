@@ -22,7 +22,7 @@
         "epochs":5,
         "batches_per_epoch":1000,
         "bs":16,
-        "max_len_claim":30,
+        "max_len_claims":30,
         "max_total_len":512
     }
 }

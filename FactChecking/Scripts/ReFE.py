@@ -21,7 +21,6 @@ class ReFE(torch.nn.Module):
         else:
             self.out = torch.nn.Linear((self.bert_width*4),1)
         self.innerAttDoc = torch.nn.Parameter(torch.FloatTensor(np.random.uniform(0, 1, (self.bert_width*4, 512))))
-        
         self.dropout = torch.nn.Dropout(0.1)
     
     def forward(self, dt, ds, da, qt, qs, qa):
