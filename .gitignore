@@ -8,3 +8,9 @@ Kaggle - TOI Headlines - Categories.ipynb
 Untitled.ipynb
 
 *.h5
+
+*.pickle
+
+.ipynb_checkpoints/
+
+__pycache__/
