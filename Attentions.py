@@ -86,13 +86,13 @@ def dotProductAttention(mat_a, mat_b, weights):
     
     """
         :param mat_a: (b, at, dim)
-        :param mat_b: (b, 1, dim)
+        :param mat_b: (b, bt, dim)
         :param weights: (dim, dim)
         
         :output att: (b, at)
     """
-    _a = torch.matmul(mat_a, weights) # b, at, dim
-    _b = torch.matmul(_a, mat_b.transpose(-2, -1)) #b, at, 1
+    _a = torch.tanh(torch.matmul(mat_a, weights)) # b, at, dim; [-1,1]
+    _b = torch.matmul(_a, mat_b.transpose(-2, -1)) #b, at, bt
     att = F.softmax(_b, dim=1) #b, at
     return att
     
