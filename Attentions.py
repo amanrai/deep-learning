@@ -82,11 +82,11 @@ def InnerAttention(matrix, att_weights):
     _m = F.softmax(_m, dim=1)
     return torch.sum(_m * matrix, dim=1)
 
+
 def dotProductAttention(mat_a, mat_b, weights):
-    
     """
         :param mat_a: (b, at, dim)
-        :param mat_b: (b, bt, dim)
+        :param mat_b: (b, 1, dim)
         :param weights: (dim, dim)
         
         :output att: (b, at)
@@ -95,7 +95,6 @@ def dotProductAttention(mat_a, mat_b, weights):
     _b = torch.matmul(_a, mat_b.transpose(-2, -1)) #b, at, bt
     att = F.softmax(_b, dim=1) #b, at
     return att
-    
     
     
     
