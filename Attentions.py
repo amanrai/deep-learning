@@ -96,5 +96,8 @@ def dotProductAttention(mat_a, mat_b, weights):
     att = F.softmax(_b, dim=1) #b, at
     return att
     
-    
+def bahdanauAttention(uahj, st_wa, va):
+    _intermediate = torch.tanh(st_wa + uahj)
+    _att = F.softmax(torch.matmul(_intermediate, va), dim=-1)
+    return _att 
     
