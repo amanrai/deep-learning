@@ -12,8 +12,6 @@ import argparse
 parser = argparse.ArgumentParser(description='')
 saved_model = None
 parser.add_argument('--reuse-saved-model', type=str, dest =saved_model, help='model to continue training')
-parser.add_argument()
-
 
 args = parser.parse_args()
 print(args)
