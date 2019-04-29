@@ -67,8 +67,8 @@ class SummarizerCell(torch.nn.Module):
         _input = torch.cat([dcv, _input], dim=-1)
         print("Cat:", _input.size())
 
-        output, hs = gru_forward(self.gru, _input, last_hidden_state.squeeze(1))
+        hs = gru_forward(self.gru, _input, last_hidden_state.squeeze(1))
 
-        print(output.size(), hs.size())
+        print("New hidden state:",hs.size())
 
         return "Forward The Summarizer!"
