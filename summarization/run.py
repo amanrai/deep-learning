@@ -13,7 +13,7 @@ wordCriterion = torch.nn.CrossEntropyLoss()
 def coverageLoss(coverages, attentions):
     _mins = torch.min(coverages, attentions)[0]
     _sums = torch.sum(_mins, dim=-1)
-    print(_sums.size())
+    print(_sums)
 
 
 max_doc_length = 100
