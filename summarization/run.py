@@ -119,8 +119,7 @@ def train(bs = 5,
         modelSaver(network, epoch_losses)
         print("\n")
 
-print("Summarizer...")
-print("Loading data...")
+print("Summarizer...\nLoading data...")
 all_data = pickle.load(open("./training_0.pickle", "rb"))
 
 _cuda = torch.cuda.is_available()
@@ -128,8 +127,10 @@ if (_cuda):
     print("Cuda is available.")
 print("Creating Model...")    
 sc = SummarizerCell(isCuda=_cuda)
+network = torch.nn.DataParallel(sc)
+
 if (args.reuse_saved_model is not None):
-    print("Reusing weights from:", args.reuse_saved_model)
+    print("\treusing weights from:", args.reuse_saved_model)
     sc.load_state_dict(torch.load(args.reuse_saved_model))
 
 optimizer = torch.optim.Adam(sc.parameters(), lr=lr)
