@@ -47,12 +47,13 @@ gen_words = []
 gen_atts = []
 coverages = []
 
-_d, _ = bert(d, se, m, output_all_encoded_layers = False)
-_d = _d * m.unsqueeze(-1).float()   
+
 
 for i in range(5):
     act_words = su[:,i]
     optimizer.zero_grad()
+    _d, _ = bert(d, se, m, output_all_encoded_layers = False)
+    _d = _d * m.unsqueeze(-1).float()   
     new_words, atts, _hs = s.forward(_d, _hs, _prev_word)
     actual_words = F.softmax(new_words, dim=-1)
     actual_words = torch.max(actual_words, dim=-1)[1]
