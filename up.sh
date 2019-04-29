@@ -1,3 +1,4 @@
+echo $1
 git add .
-git commit
+git commit --allow-empty-message 
 git push
