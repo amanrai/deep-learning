@@ -18,7 +18,7 @@ def ContextVector(input, attention):
     _i = input*attention
     return torch.sum(_i, dim=-1)
 
-def gru_forward()
+#def gru_forward()
 
 class SummarizerCell(torch.nn.Module):
     def __init__(self, 
