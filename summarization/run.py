@@ -13,62 +13,60 @@ def train(bs = 5,
             _data=None, 
             bert=None, 
             optim = None,
+            cuda = True,
             max_doc_length = 100,
             max_summary_length = 10):
-    d, se, m, su, po = genBatch(bs = bs,
-                                data=_data, 
-                                _cuda = _cuda, 
-                                max_doc_length = max_doc_length, 
-                                max_summary_length=max_summary_length)
 
-    _hs = network.genHiddenState((d.size()[0], 768))
-    _prev_word = None
-    if (_cuda):
-        _prev_word = torch.LongTensor([101]).cuda()
-    else:
-        _prev_word = torch.LongTensor([101]).cuda()
+    for batch in range(100):
+        d, se, m, su, po = genBatch(bs = bs,
+                                    data=_data, 
+                                    _cuda = cuda, 
+                                    max_doc_length = max_doc_length, 
+                                    max_summary_length=max_summary_length)
 
-    _prev_word = _prev_word.repeat(bs, 1)
-    gen_words = []
-    gen_atts = []
+        _hs = network.genHiddenState((d.size()[0], 768))
+        _prev_word = None
+        if (_cuda):
+            _prev_word = torch.LongTensor([101]).cuda()
+        else:
+            _prev_word = torch.LongTensor([101]).cuda()
 
-    coverages = []
-    gen_logits = []
-    act_words = []
-    _d, _ = bert(d, se, m, output_all_encoded_layers = False)
-    _d = _d * m.unsqueeze(-1).float()   
+        _prev_word = _prev_word.repeat(bs, 1)
+        gen_words = []
+        gen_atts = []
 
-    optimizer.zero_grad()
-    coverage = torch.zeros((d.size()[0], d.size()[1])).cuda()
-    zeros = torch.zeros((d.size()[0], d.size()[1])).cuda()
+        coverages = []
+        gen_logits = []
+        act_words = []
+        _d, _ = bert(d, se, m, output_all_encoded_layers = False)
+        _d = _d * m.unsqueeze(-1).float()   
 
-    _str = ""
-    for i in range(max_summary_length):        
-        for k in range(i+1):
-            _str = _str + "."
-        print(_str, end="\r")
-        act_words.append(su[:,i])
-        new_words, atts, _hs = network.forward(_d, _hs, _prev_word)
-        actual_words = F.softmax(new_words, dim=-1)
-        actual_words = torch.max(actual_words, dim=-1)[1]
-        _prev_word = actual_words.unsqueeze(-1)
-        gen_words.append(_prev_word.detach())
-        gen_atts.append(atts)
-        coverages.append(coverage + zeros)
-        coverage = coverage + atts.squeeze(-1)
-        gen_logits.append(new_words)
+        optimizer.zero_grad()
+        coverage = torch.zeros((d.size()[0], d.size()[1])).cuda()
+        zeros = torch.zeros((d.size()[0], d.size()[1])).cuda()
 
-    print(_str)
-    gen_logits = torch.stack(gen_logits, dim=0).view(-1, 30000)
-    act_words = torch.stack(act_words, dim=0).view(-1).squeeze(-1)
-    coverages = torch.stack(coverages, dim=0).view(-1, d.size()[1])
-    gen_atts = torch.stack(gen_atts, dim=0).view(-1, d.size()[1])
+        for i in range(max_summary_length):        
+            act_words.append(su[:,i])
+            new_words, atts, _hs = network.forward(_d, _hs, _prev_word)
+            actual_words = F.softmax(new_words, dim=-1)
+            actual_words = torch.max(actual_words, dim=-1)[1]
+            _prev_word = actual_words.unsqueeze(-1)
+            gen_words.append(_prev_word.detach())
+            gen_atts.append(atts)
+            coverages.append(coverage + zeros)
+            coverage = coverage + atts.squeeze(-1)
+            gen_logits.append(new_words)
 
-    loss = wordLoss(gen_logits, act_words) + coverageLoss(coverages, gen_atts)
-    loss.backward()
+        gen_logits = torch.stack(gen_logits, dim=0).view(-1, 30000)
+        act_words = torch.stack(act_words, dim=0).view(-1).squeeze(-1)
+        coverages = torch.stack(coverages, dim=0).view(-1, d.size()[1])
+        gen_atts = torch.stack(gen_atts, dim=0).view(-1, d.size()[1])
 
-    print(loss.data.item())
-    optim.step()
+        loss = wordLoss(gen_logits, act_words) + coverageLoss(coverages, gen_atts)
+        loss.backward()
+
+        print(loss.data.item())
+        optim.step()
 
 network_testing_data = pickle.load(open("./network_testing.pickle", "rb"))
 max_doc_length = 100
@@ -89,4 +87,4 @@ else:
     _bert = BertModel.from_pretrained(bert_model)
 _bs = 5
 
-train(bs=_bs, network=sc, _data=network_testing_data, bert=_bert, optim=optimizer)
+train(bs=_bs, network=sc, _data=network_testing_data, bert=_bert, optim=optimizer, cuda=_cuda)

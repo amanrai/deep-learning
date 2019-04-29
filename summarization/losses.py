@@ -1,3 +1,5 @@
+import torch
+
 def wordLoss(predictions, actuals):
     wordCriterion = torch.nn.CrossEntropyLoss()
     _l = wordCriterion(predictions, actuals)
