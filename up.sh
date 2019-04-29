@@ -1,3 +1,5 @@
+clear
+printf "\nAdding and committing..."
 if [ "$1" == "" ]; then
     echo "You must enter a commit message."
 else
