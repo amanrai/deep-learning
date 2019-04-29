@@ -42,9 +42,9 @@ class Seq2SeqDecoderCell(torch.nn.Module):
 
     def genHiddenState(self, size):
         if (self.iscuda):
-            _hs = torch.ones(size).cuda()
+            _hs = torch.zeros(size).cuda()
         else:
-            _hs = torch.ones(size)
+            _hs = torch.zeros(size)
         return _hs
 
     def forward(self, docs, last_hidden_state, input):                 
