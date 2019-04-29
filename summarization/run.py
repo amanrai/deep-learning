@@ -23,4 +23,4 @@ d, se, m, su, po = genBatch(data=network_testing_data,
 print("Getting hidden state!")
 _hs = s.genHiddenState((d.size()[0], 1, 768))
 print("Forward!")
-s.forward(d, _hs, [101])
+s.forward(d, se, m, _hs, [101])

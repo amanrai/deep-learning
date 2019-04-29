@@ -40,8 +40,8 @@ class SummarizerCell(torch.nn.Module):
         _hs = torch.ones(size)
         return _hs
 
-    def forward(self, docs, last_hidden_state, input):
-        _d, _ = self.bert(docs)
+    def forward(self, docs, segments, masks, last_hidden_state, input):
+        _d, _ = self.bert(docs, segments, masks, output_all_encoded_layers = False)
         print(last_hidden_state.size(), _d.size())
         Attention(_d, last_hidden_state, self.attention_w, self.attention_v)
         return "Forward The Summarizer!"
