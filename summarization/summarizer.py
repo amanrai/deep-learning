@@ -30,6 +30,11 @@ class SummarizerCell(torch.nn.Module):
         self.attention_w = torch.nn.Linear(self.bert_width*2, attention_dim)
         self.attention_v = torch.nn.Linear(attention_dim, 1)
 
+        if (self.iscuda):
+            self.bert = BertModel.from_pretrained(bert_model).cuda()
+        else:
+            self.bert = BertModel.from_pretrained(bert_model)
+
     def genHiddenState(self, size):
         _hs = torch.ones(size)
         return _hs

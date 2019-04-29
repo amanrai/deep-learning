@@ -4,11 +4,7 @@ import torch
 def genBatch(bs = 5, validation = False, data = None, _cuda=True, max_doc_length=100, max_summary_length=10):
     if (data == None):
         return
-    #data = network_testing_data
-    """
-    if (validation):
-        data = testing
-    """
+        
     indices = np.random.randint(0, len(data), (bs,))
     docs = [data[index]["story_tokens"] for index in indices]
     _pointers = [data[index]["pointers"] for index in indices]
