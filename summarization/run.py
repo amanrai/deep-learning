@@ -121,5 +121,5 @@ _bs = 30
 print("Training...\n")
 train(bs=_bs, 
         epochs = 5,
-        batches = 3000,
+        batches = 30000,
         network=sc, _data=all_data, bert=_bert, optim=optimizer, cuda=_cuda)
