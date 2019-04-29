@@ -57,9 +57,10 @@ class SummarizerCell(torch.nn.Module):
         _d = _d * masks.unsqueeze(-1).float()   
         att = Attention(_d, last_hidden_state, self.attention_w, self.attention_v)
         dcv = ContextVector(_d, att)
-
+        print(dcv.size())
         _input = self.embedding(input)
         _input = _input.squeeze(1)
+        print(_input.size())
         _input = torch.cat([dcv, _input], dim=-1)
         print(_input.size())
 
