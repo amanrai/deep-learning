@@ -66,7 +66,7 @@ def train(bs = 5,
         loss = wordLoss(gen_logits, act_words) + coverageLoss(coverages, gen_atts)
         loss.backward()
 
-        batch_loss.append(loss.data.item())
+        batch_losses.append(loss.data.item())
         _loss_str = "Loss:" + np.round(np.mean(batch_losses), 5)
         print(_loss_str, end="\r")
         optim.step()
