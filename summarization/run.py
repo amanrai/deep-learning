@@ -10,6 +10,10 @@ from pytorch_pretrained_bert import BertModel
 network_testing_data = pickle.load(open("./network_testing.pickle", "rb"))
 
 wordCriterion = torch.nn.CrossEntropyLoss()
+def coverageLoss(coverages, attentions):
+    _mins = torch.min(coverages, attentions, dim=-1)[0]
+    _sums = torch.sum(_mins, dim=-1)
+    print(_sums.size())
 
 
 max_doc_length = 100
@@ -34,6 +38,7 @@ d, se, m, su, po = genBatch(bs = bs,
                             _cuda = _cuda, 
                             max_doc_length = max_doc_length, 
                             max_summary_length=max_summary_length)
+
 
 _hs = s.genHiddenState((d.size()[0], 768))
 _prev_word = None
@@ -72,7 +77,7 @@ gen_logits = torch.stack(gen_logits, dim=0).view(-1, 30000)
 act_words = torch.stack(act_words, dim=0).view(-1).squeeze(-1)
 coverages = torch.stack(coverages, dim=0).view(-1, d.size()[1])
 gen_atts = torch.stack(gen_atts, dim=0).view(-1, d.size()[1])
-print(coverages.size(), gen_atts.size())
+coverageLoss(coverages, attentions)
 loss = wordCriterion(gen_logits, act_words)
 loss.backward()
 
