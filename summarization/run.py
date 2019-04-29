@@ -47,20 +47,23 @@ gen_words = []
 gen_atts = []
 coverages = []
 
+gen_logits = []
+act_words = []
+_d, _ = bert(d, se, m, output_all_encoded_layers = False)
+_d = _d * m.unsqueeze(-1).float()   
 
-
+optimizer.zero_grad()
 for i in range(5):
-    act_words = su[:,i]
-    optimizer.zero_grad()
-    _d, _ = bert(d, se, m, output_all_encoded_layers = False)
-    _d = _d * m.unsqueeze(-1).float()   
+    act_words.append(su[:,i])
     new_words, atts, _hs = s.forward(_d, _hs, _prev_word)
     actual_words = F.softmax(new_words, dim=-1)
     actual_words = torch.max(actual_words, dim=-1)[1]
     _prev_word = actual_words.unsqueeze(-1)
     gen_words.append(_prev_word.detach())
     gen_atts.append(atts.detach())
-    loss = wordCriterion(new_words, act_words)
-    loss.backward()
-    optimizer.step()
-    print(loss.data.item())
+    gen_logits.append(new_words)
+gen_logits = torch.stack(gen_logits, dim=0)
+act_words = torch.stack(act_words, dim=0)
+loss = wordCriterion(gen_logits, act_words)
+loss.backward()
+optimizer.step()
