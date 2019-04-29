@@ -8,7 +8,6 @@ def Attention(to_, from_, w, v):
     if (from_.size()[1] > 1):
         assert "From is longer than one timestep!"
     
-
     _f = from_.repeat(1, to_.size()[1], 1)
     _f = torch.cat([to_, _f], dim=-1)
     _o = w(_f)
@@ -55,21 +54,14 @@ class SummarizerCell(torch.nn.Module):
         return _hs
 
     def forward(self, docs, segments, masks, last_hidden_state, input): 
-        print("Last Hidden State:", last_hidden_state.size())       
         _d, _ = self.bert(docs, segments, masks, output_all_encoded_layers = False)
         _d = _d * masks.unsqueeze(-1).float()   
         att = Attention(_d, last_hidden_state, self.attention_w, self.attention_v)
         dcv = ContextVector(_d, att)
-        print("DCV:", dcv.size())
-        _input = self.embedding(input)
-        print("FROM EMBEDDING:",_input.size())
-        _input = _input.squeeze(1)
-        print("Squeeze:", _input.size())
-        _input = torch.cat([dcv, _input], dim=-1)
-        print("Cat:", _input.size())
-        hs = gru_forward(self.gru, _input, last_hidden_state.squeeze(1))
-        print("New hidden state:",hs.size())
+        _input = self.embedding(input)        
+        _input = _input.squeeze(1)        
+        _input = torch.cat([dcv, _input], dim=-1)        
+        hs = gru_forward(self.gru, _input, last_hidden_state)
         word = self.hsToVocab(hs)
-        print("New words:", word.size())
-
+    
         return word, att

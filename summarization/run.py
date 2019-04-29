@@ -21,7 +21,7 @@ d, se, m, su, po = genBatch(bs = bs,
                             max_summary_length=max_summary_length)
 
 
-_hs = s.genHiddenState((d.size()[0], 1, 768))
+_hs = s.genHiddenState((d.size()[0], 768))
 _prev_word = None
 if (_cuda):
     _prev_word = torch.LongTensor([101]).cuda()
