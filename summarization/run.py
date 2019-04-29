@@ -106,6 +106,6 @@ else:
 _bs = 30
 
 train(bs=_bs, 
-        epochs = 10,
-        batches = 250,
+        epochs = 1,
+        batches = 25,
         network=sc, _data=network_testing_data, bert=_bert, optim=optimizer, cuda=_cuda)
