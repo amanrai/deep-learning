@@ -19,13 +19,13 @@ def gru_forward(gru_cell, input, hidden_state):
     out = gru_cell(input, hidden_state)
     return out
 
-class Seq2SeqCell(torch.nn.Module):
+class Seq2SeqDecoderCell(torch.nn.Module):
     def __init__(self, 
                  bert_model = "bert-base-uncased",
                  attention_dim = 512,
                  tf = True,
                  isCuda = True):
-        super(Seq2SeqCell, self).__init__()
+        super(Seq2SeqDecoderCell, self).__init__()
         self.bert_width = 768
         self.bert_model = bert_model
         if ("-large-" in bert_model):
@@ -40,8 +40,6 @@ class Seq2SeqCell(torch.nn.Module):
         self.embedding = torch.nn.Embedding(30000, self.bert_width)
         self.hsToVocab = torch.nn.Linear(self.bert_width, 30000)
 
-
-
     def genHiddenState(self, size):
         if (self.iscuda):
             _hs = torch.ones(size).cuda()
@@ -49,7 +47,7 @@ class Seq2SeqCell(torch.nn.Module):
             _hs = torch.ones(size)
         return _hs
 
-    def forward(self, docs, segments, masks, last_hidden_state, input):                 
+    def forward(self, docs, last_hidden_state, input):                 
         att = Attention(docs, last_hidden_state.unsqueeze(1), self.attention_w, self.attention_v)
         dcv = ContextVector(docs, att)
 
