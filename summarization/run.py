@@ -11,6 +11,8 @@ import random
 import argparse
 parser = argparse.ArgumentParser(description='')
 parser.add_argument('--reuse-saved-model', type=str, help='model to continue training')
+parser.add_argument()
+
 
 args = parser.parse_args()
 print(args)
@@ -111,6 +113,9 @@ if (_cuda):
     print("Cuda is available.")
 print("Creating Model...")    
 sc = SummarizerCell(isCuda=_cuda)
+if (args["reuse-saved-model"] is not None):
+    sc.load_saved_dict(torch.load(args["reuse-saved-model"]))
+
 optimizer = torch.optim.Adam(sc.parameters(), lr=1e-3)
 
 if (_cuda):
