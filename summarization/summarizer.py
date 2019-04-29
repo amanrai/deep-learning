@@ -37,7 +37,10 @@ class SummarizerCell(torch.nn.Module):
             self.bert = BertModel.from_pretrained(bert_model)
 
     def genHiddenState(self, size):
-        _hs = torch.ones(size)
+        if (self.iscuda):
+            _hs = torch.ones(size).cuda()
+        else:
+            _hs = torch.ones(size)
         return _hs
 
     def forward(self, docs, segments, masks, last_hidden_state, input):

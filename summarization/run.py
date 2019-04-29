@@ -6,13 +6,11 @@ from dataOps import *
 network_testing_data = pickle.load(open("./network_testing.pickle", "rb"))
 print(len(network_testing_data))
 
-
-
 max_doc_length = 100
 max_summary_length = 10
 _cuda = torch.cuda.is_available()
 
-s = SummarizerCell()
+s = SummarizerCell(isCuda=_cuda)
 if (_cuda):
     s.cuda()
 d, se, m, su, po = genBatch(data=network_testing_data, 
@@ -22,6 +20,5 @@ d, se, m, su, po = genBatch(data=network_testing_data,
 
 print("Getting hidden state!")
 _hs = s.genHiddenState((d.size()[0], 1, 768))
-_hs.cuda()
 print("Forward!")
 s.forward(d, se, m, _hs, [101])
