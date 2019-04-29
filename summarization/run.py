@@ -11,11 +11,12 @@ network_testing_data = pickle.load(open("./network_testing.pickle", "rb"))
 
 wordCriterion = torch.nn.CrossEntropyLoss()
 def coverageLoss(coverages, attentions):
-    print(coverages.size(), attentions.size())
-    _mins = torch.min(coverages, attentions)[0]
-    print(_mins.size())
-    _sums = torch.sum(_mins, dim=-1)
-    print(_sums)
+    total_loss = 0
+    for i in range(coverages.size()[0]):
+        _mins = torch.min(coverages[i], attentions[i])[0]
+        _sums = torch.sum(_mins, dim=-1)
+        total_loss = total_loss + _sums
+    print(total_loss)
 
 
 max_doc_length = 100
