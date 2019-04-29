@@ -7,6 +7,7 @@ from dataOps import *
 from losses import *
 from pytorch_pretrained_bert import BertTokenizer
 from pytorch_pretrained_bert import BertModel
+import random
 
 def train(bs = 5, 
             epochs = 1,
@@ -17,6 +18,7 @@ def train(bs = 5,
             optim = None,
             cuda = True,
             max_doc_length = 100,
+            teacher_forcing_rate = 0.5,
             max_summary_length = 10):            
     epoch_losses = []
     for epoch in range(epochs):
@@ -44,7 +46,7 @@ def train(bs = 5,
             coverages = []
             gen_logits = []
             act_words = []
-            
+
             _d, _ = bert(d, se, m, output_all_encoded_layers = False)
             _d = _d * m.unsqueeze(-1).float()   
 
@@ -58,7 +60,10 @@ def train(bs = 5,
                 actual_words = F.softmax(new_words, dim=-1)
                 actual_words = torch.max(actual_words, dim=-1)[1]
                 _prev_word = actual_words.unsqueeze(-1)
-                gen_words.append(_prev_word.detach())
+                if (random.random() < teacher_forcing_rate):
+                    gen_words.append(su[:,i].detach())
+                else:
+                    gen_words.append(_prev_word.detach())
                 if (i > 0):
                     gen_atts.append(atts)
                     coverages.append(coverage + zeros)
