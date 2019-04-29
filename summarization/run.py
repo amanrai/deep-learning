@@ -9,8 +9,6 @@ from pytorch_pretrained_bert import BertModel
 
 network_testing_data = pickle.load(open("./network_testing.pickle", "rb"))
 
-
-
 def wordLoss(predictions, actuals):
     wordCriterion = torch.nn.CrossEntropyLoss()
     _l = wordCriterion(predictions, actuals)
@@ -24,23 +22,6 @@ def coverageLoss(coverages, attentions):
         total_loss = total_loss + _sums
     return total_loss/coverages.size()[0]
 
-
-max_doc_length = 100
-max_summary_length = 10
-_cuda = torch.cuda.is_available()
-
-sc = SummarizerCell(isCuda=_cuda)
-optimizer = torch.optim.Adam(sc.parameters(), lr=1e-3)
-if (_cuda):
-    sc.cuda()
-
-_bert = None
-bert_model = "bert-base-uncased"
-if (_cuda):
-    _bert = BertModel.from_pretrained(bert_model).cuda()
-else:
-    _bert = BertModel.from_pretrained(bert_model)
-_bs = 5
 
 def train(bs = 5, network=None, _data=None, bert=None, optim = None):
     d, se, m, su, po = genBatch(bs = bs,
@@ -92,3 +73,24 @@ def train(bs = 5, network=None, _data=None, bert=None, optim = None):
 
     print(loss.data.item())
     optim.step()
+
+
+max_doc_length = 100
+max_summary_length = 10
+_cuda = torch.cuda.is_available()
+sc = SummarizerCell(isCuda=_cuda)
+
+optimizer = torch.optim.Adam(sc.parameters(), lr=1e-3)
+
+if (_cuda):
+    sc.cuda()
+
+_bert = None
+bert_model = "bert-base-uncased"
+if (_cuda):
+    _bert = BertModel.from_pretrained(bert_model).cuda()
+else:
+    _bert = BertModel.from_pretrained(bert_model)
+_bs = 5
+
+train(bs=_bs, network=sc, _data=network_testing_data, bert=_bert, optim=optimizer)
