@@ -13,9 +13,11 @@ import argparse
 
 parser = argparse.ArgumentParser(description='')
 parser.add_argument('--reuse_saved_model', type=str, help='model to continue training')
-parser.add_argument('--epochs', type=int)
+parser.add_argument('--epochs', type=int, default=5)
 parser.add_argument('--batches_per_epoch', type=int)
 parser.add_argument('--bs', type=int)
+parser.add_argument('--summary_length', type=int)
+parser.add_argument('--doc_length', type=int)
 
 args = parser.parse_args()
 print(args)
@@ -110,8 +112,21 @@ def train(bs = 5,
 print("\n\nSummarizer, summarizer!")
 print("Loading data...")
 all_data = pickle.load(open("./training_0.pickle", "rb"))
+
+epochs = 5
+batches_per_epoch = 300
 max_doc_length = 100
 max_summary_length = 10
+
+if (args.summary_length is not None):
+    max_summary_length = args.summary_length
+
+if (args.doc_length is not None):
+    max_doc_length = args.doc_length
+
+if (args.epochs is not None):
+    epochs = args.epochs
+
 _cuda = torch.cuda.is_available()
 if (_cuda):
     print("Cuda is available.")
