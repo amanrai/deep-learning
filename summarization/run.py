@@ -29,10 +29,10 @@ max_doc_length = 100
 max_summary_length = 10
 _cuda = torch.cuda.is_available()
 
-s = SummarizerCell(isCuda=_cuda)
+network = SummarizerCell(isCuda=_cuda)
 optimizer = torch.optim.Adam(s.parameters(), lr=1e-3)
 if (_cuda):
-    s.cuda()
+    network.cuda()
 
 bert = None
 bert_model = "bert-base-uncased"
@@ -48,8 +48,7 @@ d, se, m, su, po = genBatch(bs = bs,
                             max_doc_length = max_doc_length, 
                             max_summary_length=max_summary_length)
 
-
-_hs = s.genHiddenState((d.size()[0], 768))
+_hs = network.genHiddenState((d.size()[0], 768))
 _prev_word = None
 if (_cuda):
     _prev_word = torch.LongTensor([101]).cuda()
