@@ -17,7 +17,7 @@ def train(bs = 5,
             optim = None,
             cuda = True,
             max_doc_length = 100,
-            max_summary_length = 10):
+            max_summary_length = 10):            
     epoch_losses = []
     for epoch in range(epochs):
 
@@ -83,6 +83,7 @@ def train(bs = 5,
             print(_loss_str, end="\r")
             optim.step()
         epoch_losses.append(np.mean(batch_losses))
+        modelSaver(network, epoch_losses)
         print("\n")
 
 network_testing_data = pickle.load(open("./network_testing.pickle", "rb"))

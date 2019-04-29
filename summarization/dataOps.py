@@ -1,5 +1,23 @@
 import numpy as np
 import torch
+import json
+
+def _save(model, cause, epoch_losses):
+    print("\t\t...saving model for cause", cause)
+    torch.save(model.state_dict(), "./summarizer_" + cause + ".h5")
+    with open("./Summarizer_training_cycle_"  + cause + ".json", "w") as f:            
+        f.write(json.dumps(
+            {
+                "training_losses":epoch_losses
+            }
+        ))
+        f.close()
+
+def modelSaver(model, losses):
+    if (losses[-1] == np.min(losses)):
+        _save(model, "BestTrainingLoss", losses)
+        
+    _save(model, "LastEpoch", losses)
 
 def genBatch(bs = 5, validation = False, data = None, _cuda=True, max_doc_length=100, max_summary_length=10):
     if (data == None):
