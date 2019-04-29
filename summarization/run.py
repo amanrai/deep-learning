@@ -33,7 +33,7 @@ else:
 
 _prev_word = _prev_word.repeat(bs, 1)
 new_words, atts = s.forward(d, se, m, _hs, _prev_word)
-actual_words = F.softmax(new_words)
+actual_words = F.softmax(new_words, dim=-1)
 actual_words = torch.max(actual_words)[1]
 print(actual_words)
 print("In run; new words:", new_words.size(), atts.size())
