@@ -45,7 +45,7 @@ def train(bs = 5,
     _str = ""
     for i in range(max_summary_length):        
         for k in range(i+1):
-            _str.append(".")
+            _str = _str + append(".")
         print(_str, end="\r")
         act_words.append(su[:,i])
         new_words, atts, _hs = network.forward(_d, _hs, _prev_word)
