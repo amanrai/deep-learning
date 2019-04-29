@@ -20,8 +20,8 @@ def ContextVector(input, attention):
     return torch.sum(_i, dim=1)
 
 def gru_forward(gru_cell, input, hidden_state):
-    out, hs = gru_cell(input, hidden_state)
-    return out, hs
+    out = gru_cell(input, hidden_state)
+    return out
 
 class SummarizerCell(torch.nn.Module):
     def __init__(self, 
@@ -66,7 +66,6 @@ class SummarizerCell(torch.nn.Module):
         print("Squeeze:", _input.size())
         _input = torch.cat([dcv, _input], dim=-1)
         print("Cat:", _input.size())
-
         hs = gru_forward(self.gru, _input, last_hidden_state.squeeze(1))
 
         print("New hidden state:",hs.size())
