@@ -9,12 +9,17 @@ from pytorch_pretrained_bert import BertTokenizer
 from pytorch_pretrained_bert import BertModel
 import random
 import argparse
+
+
 parser = argparse.ArgumentParser(description='')
-saved_model = None
-parser.add_argument('--reuse_saved_model', type=str, dest =saved_model, help='model to continue training')
+parser.add_argument('--reuse_saved_model', type=str, help='model to continue training')
+parser.add_argument('--epochs', type=int)
+parser.add_argument('--batches_per_epoch', type=int)
+parser.add_argument('--bs', type=int)
 
 args = parser.parse_args()
 print(args)
+
 def train(bs = 5, 
             epochs = 1,
             batches = 1000,
