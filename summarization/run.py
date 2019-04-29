@@ -71,7 +71,7 @@ zeros = torch.zeros((d.size()[0], d.size()[1])).cuda()
 
 for i in range(5):
     act_words.append(su[:,i])
-    new_words, atts, _hs = s.forward(_d, _hs, _prev_word)
+    new_words, atts, _hs = network.forward(_d, _hs, _prev_word)
     actual_words = F.softmax(new_words, dim=-1)
     actual_words = torch.max(actual_words, dim=-1)[1]
     _prev_word = actual_words.unsqueeze(-1)
