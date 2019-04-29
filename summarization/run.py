@@ -59,8 +59,9 @@ def train(bs = 5,
                 actual_words = torch.max(actual_words, dim=-1)[1]
                 _prev_word = actual_words.unsqueeze(-1)
                 gen_words.append(_prev_word.detach())
-                gen_atts.append(atts)
-                coverages.append(coverage + zeros)
+                if (i > 0):
+                    gen_atts.append(atts)
+                    coverages.append(coverage + zeros)
                 coverage = coverage + atts.squeeze(-1)
                 gen_logits.append(new_words)
 
