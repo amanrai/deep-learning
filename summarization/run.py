@@ -1,5 +1,5 @@
 import pickle
-from summarizer import Summarizer
+from summarizer import SummarizerCell
 import numpy as np
 import torch
 network_testing_data = pickle.load(open("./network_testing.pickle", "rb"))
