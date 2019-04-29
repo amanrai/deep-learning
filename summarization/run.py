@@ -41,10 +41,10 @@ def train(bs = 5,
             _prev_word = _prev_word.repeat(bs, 1)
             gen_words = []
             gen_atts = []
-
             coverages = []
             gen_logits = []
             act_words = []
+            
             _d, _ = bert(d, se, m, output_all_encoded_layers = False)
             _d = _d * m.unsqueeze(-1).float()   
 
