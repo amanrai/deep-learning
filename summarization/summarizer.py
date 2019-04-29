@@ -40,6 +40,6 @@ class SummarizerCell(torch.nn.Module):
         return _hs
 
     def forward(self, docs, last_hidden_state, input):
-        _d = self.bert(docs)
+        _d, _ = self.bert(docs)
         Attention(_d, last_hidden_state, self.attention_w, self.attention_v)
         return "Forward The Summarizer!"
