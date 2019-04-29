@@ -64,6 +64,7 @@ for i in range(5):
     _prev_word = actual_words.unsqueeze(-1)
     gen_words.append(_prev_word.detach())
     gen_atts.append(atts.detach())
+    print(atts.size())
     coverages.append(coverage + zeros)
     coverage = coverage + atts
     gen_logits.append(new_words)
