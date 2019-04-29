@@ -86,12 +86,16 @@ def train(bs = 5,
         modelSaver(network, epoch_losses)
         print("\n")
 
-network_testing_data = pickle.load(open("./network_testing.pickle", "rb"))
+print("\n\nSummarizer, summarizer!")
+print("Loading data...")
+all_data = pickle.load(open("./training_0.pickle", "rb"))
 max_doc_length = 100
 max_summary_length = 10
 _cuda = torch.cuda.is_available()
+if (_cuda):
+    print("Cuda is available.")
+print("Creating Model...")    
 sc = SummarizerCell(isCuda=_cuda)
-
 optimizer = torch.optim.Adam(sc.parameters(), lr=1e-3)
 
 if (_cuda):
@@ -104,8 +108,8 @@ if (_cuda):
 else:
     _bert = BertModel.from_pretrained(bert_model)
 _bs = 30
-
+print("Training...\n")
 train(bs=_bs, 
-        epochs = 1,
-        batches = 25,
-        network=sc, _data=network_testing_data, bert=_bert, optim=optimizer, cuda=_cuda)
+        epochs = 30,
+        batches = 300,
+        network=sc, _data=all_data, bert=_bert, optim=optimizer, cuda=_cuda)
