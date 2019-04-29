@@ -40,6 +40,7 @@ class SummarizerCell(torch.nn.Module):
         self.attention_v = torch.nn.Linear(attention_dim, 1)
 
         self.embedding = torch.nn.Embedding(30000, self.bert_width)
+        self.hsToVocab = torch.nn.Linear(self.bert_width, 30000)
 
         if (self.iscuda):
             self.bert = BertModel.from_pretrained(bert_model).cuda()
@@ -67,7 +68,8 @@ class SummarizerCell(torch.nn.Module):
         _input = torch.cat([dcv, _input], dim=-1)
         print("Cat:", _input.size())
         hs = gru_forward(self.gru, _input, last_hidden_state.squeeze(1))
-
         print("New hidden state:",hs.size())
+        word = self.hsToVocab(hs)
+        print("New words:", word.size())
 
-        return "Forward The Summarizer!"
+        return word, att

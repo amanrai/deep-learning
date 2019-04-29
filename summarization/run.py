@@ -29,4 +29,5 @@ else:
     _prev_word = torch.LongTensor([101]).cuda()
 
 _prev_word = _prev_word.repeat(bs, 1)
-s.forward(d, se, m, _hs, _prev_word)
+new_words, atts = s.forward(d, se, m, _hs, _prev_word)
+print("In run; new words:", new_words.size(), atts.size())
