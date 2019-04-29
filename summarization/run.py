@@ -53,8 +53,8 @@ _d, _ = bert(d, se, m, output_all_encoded_layers = False)
 _d = _d * m.unsqueeze(-1).float()   
 
 optimizer.zero_grad()
-coverage = torch.zeros((d.size()[0], d.size()[1]))
-zeros = torch.zeros((d.size()[0], d.size()[1]))
+coverage = torch.zeros((d.size()[0], d.size()[1])).cuda()
+zeros = torch.zeros((d.size()[0], d.size()[1])).cuda()
 
 for i in range(5):
     act_words.append(su[:,i])
@@ -64,7 +64,6 @@ for i in range(5):
     _prev_word = actual_words.unsqueeze(-1)
     gen_words.append(_prev_word.detach())
     gen_atts.append(atts.detach())
-    print(coverage.size(), atts.size())
     coverages.append(coverage + zeros)
     coverage = coverage + atts.squeeze(-1)
     gen_logits.append(new_words)
