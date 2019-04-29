@@ -16,7 +16,7 @@ def coverageLoss(coverages, attentions):
         _mins = torch.min(coverages[i], attentions[i])[0]
         _sums = torch.sum(_mins, dim=-1)
         total_loss = total_loss + _sums
-    print(total_loss/coverages.size()[0])
+    return total_loss/coverages.size()[0]
 
 
 max_doc_length = 100
