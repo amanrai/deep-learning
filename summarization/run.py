@@ -64,7 +64,7 @@ for i in range(5):
     gen_logits.append(new_words)
 gen_logits = torch.stack(gen_logits, dim=0).view(-1, 30000)
 print(gen_logits.size())
-act_words = torch.stack(act_words, dim=0).view(-1)
+act_words = torch.stack(act_words, dim=0).view(-1).squeeze(-1)
 print(act_words.size())
 loss = wordCriterion(gen_logits, act_words)
 loss.backward()
