@@ -17,4 +17,4 @@ class Summarizer(torch.nn.Module):
         self.teacherForcing = tf
 
     def forward(self):
-        return "Forward!"
+        return "Forward The Summarizer!"
