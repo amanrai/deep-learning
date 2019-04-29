@@ -80,8 +80,8 @@ gen_logits = torch.stack(gen_logits, dim=0).view(-1, 30000)
 act_words = torch.stack(act_words, dim=0).view(-1).squeeze(-1)
 coverages = torch.stack(coverages, dim=0).view(-1, d.size()[1])
 gen_atts = torch.stack(gen_atts, dim=0).view(-1, d.size()[1])
-coverageLoss(coverages, gen_atts)
-loss = wordCriterion(gen_logits, act_words)
+
+loss = wordCriterion(gen_logits, act_words) + coverageLoss(coverages, gen_atts)
 loss.backward()
 
 print(loss.data.item())
