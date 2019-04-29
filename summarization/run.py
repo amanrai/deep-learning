@@ -8,6 +8,9 @@ from losses import *
 from pytorch_pretrained_bert import BertTokenizer
 from pytorch_pretrained_bert import BertModel
 import random
+import argparse
+parser = argparse.ArgumentParser(description='')
+parser.add_argument('--reuse-saved-model', type=str, help='model to continue training')
 
 def train(bs = 5, 
             epochs = 1,
