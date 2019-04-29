@@ -127,7 +127,7 @@ if (_cuda):
     _bert = BertModel.from_pretrained(bert_model).cuda()
 else:
     _bert = BertModel.from_pretrained(bert_model)
-_bs = 30
+_bs = 28
 print("Training...\n")
 train(bs=_bs, 
         epochs = 5,
