@@ -18,7 +18,7 @@ def train(bs = 5,
             optim = None,
             cuda = True,
             max_doc_length = 100,
-            teacher_forcing_rate = 0.5,
+            teacher_forcing_rate = 0.25,
             max_summary_length = 10):            
     epoch_losses = []
     for epoch in range(epochs):
