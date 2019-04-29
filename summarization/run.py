@@ -17,9 +17,10 @@ def train(bs = 5,
             bert=None, 
             optim = None,
             cuda = True,
-            max_doc_length = 100,
             teacher_forcing_rate = 0.25,
-            max_summary_length = 10):            
+            max_doc_length = 100,            
+            max_summary_length = 10):    
+
     epoch_losses = []
     for epoch in range(epochs):
 
@@ -35,7 +36,8 @@ def train(bs = 5,
 
             _hs = network.genHiddenState((d.size()[0], 768))
             _prev_word = None
-            if (_cuda):
+
+            if (cuda):
                 _prev_word = torch.LongTensor([101]).cuda()
             else:
                 _prev_word = torch.LongTensor([101]).cuda()
@@ -64,9 +66,11 @@ def train(bs = 5,
                     gen_words.append(su[:,i].detach())
                 else:
                     gen_words.append(_prev_word.detach())
-                if (i > 0):
+
+                if (i > 0): #coverage loss will be 0 for the first step. 
                     gen_atts.append(atts)
                     coverages.append(coverage + zeros)
+                
                 coverage = coverage + atts.squeeze(-1)
                 gen_logits.append(new_words)
 
@@ -116,6 +120,6 @@ else:
 _bs = 30
 print("Training...\n")
 train(bs=_bs, 
-        epochs = 30,
-        batches = 300,
+        epochs = 5,
+        batches = 3000,
         network=sc, _data=all_data, bert=_bert, optim=optimizer, cuda=_cuda)
