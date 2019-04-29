@@ -17,6 +17,7 @@ def train(bs = 5,
             max_doc_length = 100,
             max_summary_length = 10):
 
+    batch_losses = []
     for batch in range(100):
         d, se, m, su, po = genBatch(bs = bs,
                                     data=_data, 
@@ -65,7 +66,9 @@ def train(bs = 5,
         loss = wordLoss(gen_logits, act_words) + coverageLoss(coverages, gen_atts)
         loss.backward()
 
-        print(loss.data.item())
+        batch_loss.append(loss.data.item())
+        _loss_str = "Loss:" + np.round(np.mean(batch_losses), 5)
+        print(_loss_str, end="\r")
         optim.step()
 
 network_testing_data = pickle.load(open("./network_testing.pickle", "rb"))
