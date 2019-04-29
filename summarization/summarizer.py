@@ -16,6 +16,7 @@ def Attention(to_, from_, w, v):
 
 def ContextVector(input, attention):
     _i = input*attention
+    print("Context Vector:",_i.size())
     return torch.sum(_i, dim=-1)
 
 def gru_forward(gru_cell, input, hidden_state):
