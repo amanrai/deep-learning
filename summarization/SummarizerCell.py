@@ -63,4 +63,4 @@ class SummarizerCell(torch.nn.Module):
         hs = gru_forward(self.gru, _input, last_hidden_state)
         word = self.hsToVocab(hs)
     
-        return word, att
+        return word, att, hs
