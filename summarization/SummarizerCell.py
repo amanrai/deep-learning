@@ -1,8 +1,6 @@
 import numpy as np
 import torch
 import torch.nn.functional as F
-from pytorch_pretrained_bert import BertTokenizer
-from pytorch_pretrained_bert import BertModel
 
 def Attention(to_, from_, w, v):
     if (from_.size()[1] > 1):
@@ -21,7 +19,7 @@ def gru_forward(gru_cell, input, hidden_state):
     out = gru_cell(input, hidden_state)
     return out
 
-class SummarizerCell(torch.nn.Module):
+class Seq2SeqCell(torch.nn.Module):
     def __init__(self, 
                  bert_model = "bert-base-uncased",
                  attention_dim = 512,
@@ -53,14 +51,16 @@ class SummarizerCell(torch.nn.Module):
         return _hs
 
     def forward(self, docs, segments, masks, last_hidden_state, input): 
-        _d, _ = self.bert(docs, segments, masks, output_all_encoded_layers = False)
-        _d = _d * masks.unsqueeze(-1).float()   
+                
         att = Attention(_d, last_hidden_state.unsqueeze(1), self.attention_w, self.attention_v)
         dcv = ContextVector(_d, att)
+
         _input = self.embedding(input)        
         _input = _input.squeeze(1)        
         _input = torch.cat([dcv, _input], dim=-1)        
+        
         hs = gru_forward(self.gru, _input, last_hidden_state)
+        
         word = self.hsToVocab(hs)
     
         return word, att, hs
