@@ -20,8 +20,11 @@ def train(bs = 5,
             max_summary_length = 10):
     epoch_losses = []
     for epoch in range(epochs):
+
         batch_losses = []
-        for batch in range(100):
+
+        for batch in range(batches):
+
             d, se, m, su, po = genBatch(bs = bs,
                                         data=_data, 
                                         _cuda = cuda, 
@@ -66,13 +69,16 @@ def train(bs = 5,
             coverages = torch.stack(coverages, dim=0).view(-1, d.size()[1])
             gen_atts = torch.stack(gen_atts, dim=0).view(-1, d.size()[1])
 
-            loss = wordLoss(gen_logits, act_words) + coverageLoss(coverages, gen_atts)
+            w_loss = wordLoss(gen_logits, act_words)
+            c_loss = coverageLoss(coverages, gen_atts)
+            loss = w_loss + c_loss
             loss.backward()
 
             batch_losses.append(loss.data.item())
             _loss_str = "Epoch:" + str(epoch + 1) + \
                         " (" + str(batch+1) + "/" + str(batches) + "); " + \
-                        "Loss:" + str(np.round(np.mean(batch_losses), 5))
+                        "avg loss:" + str(np.round(np.mean(batch_losses), 5)) + \
+                        " (" + str(np.round(w_loss.data.item(), 5) + ";" + str(np.round(c_loss, 5)) + ") "
             print(_loss_str, end="\r")
             optim.step()
         epoch_losses.append(np.mean(batch_losses))
