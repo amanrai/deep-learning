@@ -64,9 +64,9 @@ for i in range(5):
     _prev_word = actual_words.unsqueeze(-1)
     gen_words.append(_prev_word.detach())
     gen_atts.append(atts.detach())
-    print(atts.size())
+    print(coverage.size(), atts.size())
     coverages.append(coverage + zeros)
-    coverage = coverage + atts
+    coverage = coverage + atts.squeeze(-1)
     gen_logits.append(new_words)
 
 gen_logits = torch.stack(gen_logits, dim=0).view(-1, 30000)
