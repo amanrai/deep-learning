@@ -14,6 +14,11 @@ def Attention(to_, from_, w, v):
     _o = w(_f)
     return F.softmax(v(_o), dim=1)
 
+def ContextVector(input, attention):
+    _i = input*attention
+    return torch.sum(_i, dim=-1)
+
+def gru_forward()
 
 class SummarizerCell(torch.nn.Module):
     def __init__(self, 
@@ -44,7 +49,13 @@ class SummarizerCell(torch.nn.Module):
         return _hs
 
     def forward(self, docs, segments, masks, last_hidden_state, input):
-        _d, _ = self.bert(docs, segments, masks, output_all_encoded_layers = False)
+        
+        _d, _ = self.bert(docs, segments, masks, output_all_encoded_layers = False)`
+        _d = _d * masks   
         att = Attention(_d, last_hidden_state, self.attention_w, self.attention_v)
-        print(att)
+
+        dcv = ContextVector(_d, att)
+
+        print(dcv.size())
+
         return "Forward The Summarizer!"
