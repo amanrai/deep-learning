@@ -4,26 +4,17 @@ import torch
 import torch.nn.functional as F
 from SummarizerCell import Seq2SeqDecoderCell as SummarizerCell
 from dataOps import *
+from losses import *
 from pytorch_pretrained_bert import BertTokenizer
 from pytorch_pretrained_bert import BertModel
 
-network_testing_data = pickle.load(open("./network_testing.pickle", "rb"))
-
-def wordLoss(predictions, actuals):
-    wordCriterion = torch.nn.CrossEntropyLoss()
-    _l = wordCriterion(predictions, actuals)
-    return _l
-
-def coverageLoss(coverages, attentions):
-    total_loss = 0
-    for i in range(coverages.size()[0]):
-        _mins = torch.min(coverages[i], attentions[i])[0]
-        _sums = torch.sum(_mins, dim=-1)
-        total_loss = total_loss + _sums
-    return total_loss/coverages.size()[0]
-
-
-def train(bs = 5, network=None, _data=None, bert=None, optim = None):
+def train(bs = 5, 
+            network=None, 
+            _data=None, 
+            bert=None, 
+            optim = None,
+            max_doc_length = 100,
+            max_summary_length = 10):
     d, se, m, su, po = genBatch(bs = bs,
                                 data=_data, 
                                 _cuda = _cuda, 
@@ -51,7 +42,11 @@ def train(bs = 5, network=None, _data=None, bert=None, optim = None):
     coverage = torch.zeros((d.size()[0], d.size()[1])).cuda()
     zeros = torch.zeros((d.size()[0], d.size()[1])).cuda()
 
-    for i in range(5):
+    _str = ""
+    for i in range(max_summary_length):        
+        for k in range(i+1):
+            _str.append(".")
+        print(_str, end="\r")
         act_words.append(su[:,i])
         new_words, atts, _hs = network.forward(_d, _hs, _prev_word)
         actual_words = F.softmax(new_words, dim=-1)
@@ -63,6 +58,7 @@ def train(bs = 5, network=None, _data=None, bert=None, optim = None):
         coverage = coverage + atts.squeeze(-1)
         gen_logits.append(new_words)
 
+    print(_str)
     gen_logits = torch.stack(gen_logits, dim=0).view(-1, 30000)
     act_words = torch.stack(act_words, dim=0).view(-1).squeeze(-1)
     coverages = torch.stack(coverages, dim=0).view(-1, d.size()[1])
@@ -74,7 +70,7 @@ def train(bs = 5, network=None, _data=None, bert=None, optim = None):
     print(loss.data.item())
     optim.step()
 
-
+network_testing_data = pickle.load(open("./network_testing.pickle", "rb"))
 max_doc_length = 100
 max_summary_length = 10
 _cuda = torch.cuda.is_available()
