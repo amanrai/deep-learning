@@ -57,7 +57,7 @@ class SummarizerCell(torch.nn.Module):
         dcv = ContextVector(_d, att)
         dcv.unsqueeze(1)
         _input = self.embedding(input)
-        print(_inp)
-        
+        print(_input.size())
+        _input = torch.cat([dcv, _input], dim=-1)
 
         return "Forward The Summarizer!"
