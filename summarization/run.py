@@ -10,17 +10,27 @@ from pytorch_pretrained_bert import BertModel
 import random
 import argparse
 
-
 parser = argparse.ArgumentParser(description='')
+
 parser.add_argument('--reuse_saved_model', type=str, help='model to continue training')
 parser.add_argument('--epochs', type=int, default=5)
-parser.add_argument('--batches_per_epoch', type=int)
-parser.add_argument('--bs', type=int)
-parser.add_argument('--summary_length', type=int)
-parser.add_argument('--doc_length', type=int)
+parser.add_argument('--batches_per_epoch', type=int, default=100)
+parser.add_argument('--bs', type=int, default=28)
+parser.add_argument('--summary_length', type=int, default=10)
+parser.add_argument('--doc_length', type=int, default=100)
+parser.add_argument('--bert_model', type=str, default="bert-base-uncased")
+parser.add_argument('--tf_rate', type=float, default=0.25)
+parser.add_argument('--lr', type=float, default=1e-3)
 
 args = parser.parse_args()
-print(args)
+epochs = args.epochs
+batches_per_epoch = args.batches_per_epoch
+max_doc_length = args.doc_length
+max_summary_length = args.summary_length
+_bs = args.bs
+bert_model = args.bert_model
+tf_rate = args.tf_rate
+lr = args.lr
 
 def train(bs = 5, 
             epochs = 1,
@@ -109,23 +119,9 @@ def train(bs = 5,
         modelSaver(network, epoch_losses)
         print("\n")
 
-print("\n\nSummarizer, summarizer!")
+print("Summarizer...")
 print("Loading data...")
 all_data = pickle.load(open("./training_0.pickle", "rb"))
-
-epochs = 5
-batches_per_epoch = 300
-max_doc_length = 100
-max_summary_length = 10
-
-if (args.summary_length is not None):
-    max_summary_length = args.summary_length
-
-if (args.doc_length is not None):
-    max_doc_length = args.doc_length
-
-if (args.epochs is not None):
-    epochs = args.epochs
 
 _cuda = torch.cuda.is_available()
 if (_cuda):
@@ -136,20 +132,24 @@ if (args.reuse_saved_model is not None):
     print("Reusing weights from:", args.reuse_saved_model)
     sc.load_state_dict(torch.load(args.reuse_saved_model))
 
-optimizer = torch.optim.Adam(sc.parameters(), lr=1e-3)
+optimizer = torch.optim.Adam(sc.parameters(), lr=lr)
 
 if (_cuda):
     sc.cuda()
 
 _bert = None
-bert_model = "bert-base-uncased"
 if (_cuda):
     _bert = BertModel.from_pretrained(bert_model).cuda()
 else:
     _bert = BertModel.from_pretrained(bert_model)
-_bs = 28
+
 print("Training...\n")
 train(bs=_bs, 
-        epochs = 5,
-        batches = 30000,
-        network=sc, _data=all_data, bert=_bert, optim=optimizer, cuda=_cuda)
+        epochs = epochs,
+        batches = batches_per_epoch,
+        network=sc, 
+        _data=all_data, 
+        bert=_bert, 
+        optim=optimizer, 
+        cuda=_cuda,
+        teacher_forcing_rate=tf_rate)
