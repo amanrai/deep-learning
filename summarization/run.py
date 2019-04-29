@@ -18,7 +18,7 @@ def train(bs = 5,
             cuda = True,
             max_doc_length = 100,
             max_summary_length = 10):
-
+    epoch_losses = []
     for epoch in range(epochs):
         batch_losses = []
         for batch in range(100):
@@ -75,6 +75,8 @@ def train(bs = 5,
                         "Loss:" + str(np.round(np.mean(batch_losses), 5))
             print(_loss_str, end="\r")
             optim.step()
+        epoch_losses.append(np.mean(batch_losses))
+        print("\n")
 
 network_testing_data = pickle.load(open("./network_testing.pickle", "rb"))
 max_doc_length = 100
@@ -93,6 +95,6 @@ if (_cuda):
     _bert = BertModel.from_pretrained(bert_model).cuda()
 else:
     _bert = BertModel.from_pretrained(bert_model)
-_bs = 5
+_bs = 15
 
 train(bs=_bs, network=sc, _data=network_testing_data, bert=_bert, optim=optimizer, cuda=_cuda)
