@@ -1,5 +1,5 @@
 import pickle
-from summarizer import SummarizerCell
+from SummarizerCell import SummarizerCell
 import numpy as np
 import torch
 from dataOps import *
