@@ -114,7 +114,7 @@ print("Creating Model...")
 sc = SummarizerCell(isCuda=_cuda)
 if (args.reuse_saved_model is not None):
     print("Reusing weights from:", args.reuse_saved_model)
-    sc.load_saved_dict(torch.load(args.reuse_saved_model))
+    sc.load_state_dict(torch.load(args.reuse_saved_model))
 
 optimizer = torch.optim.Adam(sc.parameters(), lr=1e-3)
 
