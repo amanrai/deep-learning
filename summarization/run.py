@@ -102,6 +102,6 @@ if (_cuda):
     _bert = BertModel.from_pretrained(bert_model).cuda()
 else:
     _bert = BertModel.from_pretrained(bert_model)
-_bs = 15
+_bs = 20
 
 train(bs=_bs, network=sc, _data=network_testing_data, bert=_bert, optim=optimizer, cuda=_cuda)
