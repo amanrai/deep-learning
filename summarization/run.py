@@ -23,7 +23,6 @@ d, se, m, su, po = genBatch(bs = bs,
                             max_doc_length = max_doc_length, 
                             max_summary_length=max_summary_length)
 
-
 _hs = s.genHiddenState((d.size()[0], 768))
 _prev_word = None
 if (_cuda):
@@ -32,13 +31,16 @@ else:
     _prev_word = torch.LongTensor([101]).cuda()
 
 _prev_word = _prev_word.repeat(bs, 1)
+gen_words = []
+gen_atts = []
 for i in range(5):
-    print("ts:", i)
     new_words, atts, _hs = s.forward(d, se, m, _hs, _prev_word)
     actual_words = F.softmax(new_words, dim=-1)
     actual_words = torch.max(actual_words, dim=-1)[1]
     _prev_word = actual_words.unsqueeze(-1)
-    print(_prev_word)
-    print("\n")
+    gen_words.append(_prev_word)
+    gen_atts.append(atts)
 
 
+print(gen_words)
+print(gen_atts)
