@@ -36,7 +36,8 @@ print(_prev_word)
 new_words, atts, _hs = s.forward(d, se, m, _hs, _prev_word)
 actual_words = F.softmax(new_words, dim=-1)
 actual_words = torch.max(actual_words, dim=-1)[1]
-_prev_word = actual_words
-print(actual_words.size())
+_prev_word = actual_words.unsqueeze(0)
+print(actual_words.size(), _prev_word.size())
+print(_prev_word)
 print(actual_words)
 
