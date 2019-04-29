@@ -8,6 +8,7 @@ def Attention(to_, from_, w, v):
     if (from_.size()[1] > 1):
         assert "From is longer than one timestep!"
     
+
     _f = from_.repeat(1, to_.size()[1], 1)
     _f = torch.cat([to_, _f], dim=-1)
     _o = w(_f)
@@ -41,6 +42,6 @@ class SummarizerCell(torch.nn.Module):
 
     def forward(self, docs, last_hidden_state, input):
         _d, _ = self.bert(docs)
-        print(last_hidden_state.size())
+        print(last_hidden_state.size(), _d.size())
         Attention(_d, last_hidden_state, self.attention_w, self.attention_v)
         return "Forward The Summarizer!"
