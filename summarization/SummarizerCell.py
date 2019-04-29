@@ -49,10 +49,9 @@ class Seq2SeqCell(torch.nn.Module):
             _hs = torch.ones(size)
         return _hs
 
-    def forward(self, docs, segments, masks, last_hidden_state, input): 
-                
-        att = Attention(_d, last_hidden_state.unsqueeze(1), self.attention_w, self.attention_v)
-        dcv = ContextVector(_d, att)
+    def forward(self, docs, segments, masks, last_hidden_state, input):                 
+        att = Attention(docs, last_hidden_state.unsqueeze(1), self.attention_w, self.attention_v)
+        dcv = ContextVector(docs, att)
 
         _input = self.embedding(input)        
         _input = _input.squeeze(1)        
