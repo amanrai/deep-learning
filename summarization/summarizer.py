@@ -56,7 +56,7 @@ class SummarizerCell(torch.nn.Module):
     def forward(self, docs, segments, masks, last_hidden_state, input): 
         _d, _ = self.bert(docs, segments, masks, output_all_encoded_layers = False)
         _d = _d * masks.unsqueeze(-1).float()   
-        att = Attention(_d, last_hidden_state, self.attention_w, self.attention_v)
+        att = Attention(_d, last_hidden_state.unsqueeze(1), self.attention_w, self.attention_v)
         dcv = ContextVector(_d, att)
         _input = self.embedding(input)        
         _input = _input.squeeze(1)        
