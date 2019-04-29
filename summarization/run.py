@@ -12,6 +12,8 @@ import argparse
 parser = argparse.ArgumentParser(description='')
 parser.add_argument('--reuse-saved-model', type=str, help='model to continue training')
 
+args = parser.parse_args()
+print(args)
 def train(bs = 5, 
             epochs = 1,
             batches = 1000,
