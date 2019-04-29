@@ -30,7 +30,7 @@ max_summary_length = 10
 _cuda = torch.cuda.is_available()
 
 network = SummarizerCell(isCuda=_cuda)
-optimizer = torch.optim.Adam(s.parameters(), lr=1e-3)
+optimizer = torch.optim.Adam(network.parameters(), lr=1e-3)
 if (_cuda):
     network.cuda()
 
