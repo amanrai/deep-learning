@@ -18,7 +18,9 @@ def ContextVector(input, attention):
     _i = input*attention
     return torch.sum(_i, dim=-1)
 
-#def gru_forward()
+def gru_forward(gru_cell, input, hidden_state):
+    out, hs = gru_cell(input, hidden_state)
+    return out, hs
 
 class SummarizerCell(torch.nn.Module):
     def __init__(self, 
@@ -32,7 +34,7 @@ class SummarizerCell(torch.nn.Module):
         self.iscuda = isCuda
         self.teacherForcing = tf
         
-        self.gru = torch.nn.GRU(self.bert_width * 2, self.bert_width)
+        self.gru = torch.nn.GRUCell(self.bert_width * 2, self.bert_width)
         self.attention_w = torch.nn.Linear(self.bert_width*2, attention_dim)
         self.attention_v = torch.nn.Linear(attention_dim, 1)
 
@@ -55,9 +57,14 @@ class SummarizerCell(torch.nn.Module):
         _d = _d * masks.unsqueeze(-1).float()   
         att = Attention(_d, last_hidden_state, self.attention_w, self.attention_v)
         dcv = ContextVector(_d, att)
-        dcv = dcv.unsqueeze(1)
+
         _input = self.embedding(input)
-        print(_input.size())
+        _input = _input.squeeze(1)
         _input = torch.cat([dcv, _input], dim=-1)
+        print(_input.size())
+
+        output, hs = gru_forward(self.gru, _input, last_hidden_state)
+
+        print(output.size(), hs.size())
 
         return "Forward The Summarizer!"

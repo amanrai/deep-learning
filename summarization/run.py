@@ -20,9 +20,8 @@ d, se, m, su, po = genBatch(bs = bs,
                             max_doc_length = max_doc_length, 
                             max_summary_length=max_summary_length)
 
-print("Getting hidden state!")
+
 _hs = s.genHiddenState((d.size()[0], 1, 768))
-print("Forward!")
 _prev_word = None
 if (_cuda):
     _prev_word = torch.LongTensor([101]).cuda()
@@ -30,5 +29,4 @@ else:
     _prev_word = torch.LongTensor([101]).cuda()
 
 _prev_word = _prev_word.repeat(bs, 1)
-
 s.forward(d, se, m, _hs, _prev_word)
