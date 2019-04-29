@@ -32,12 +32,13 @@ else:
     _prev_word = torch.LongTensor([101]).cuda()
 
 _prev_word = _prev_word.repeat(bs, 1)
-print(_prev_word)
-new_words, atts, _hs = s.forward(d, se, m, _hs, _prev_word)
-actual_words = F.softmax(new_words, dim=-1)
-actual_words = torch.max(actual_words, dim=-1)[1]
-_prev_word = actual_words.unsqueeze(-1)
-print(actual_words.size(), _prev_word.size())
-print(_prev_word)
-print(actual_words)
+for i in range(5):
+    print("ts:", i)
+    new_words, atts, _hs = s.forward(d, se, m, _hs, _prev_word)
+    actual_words = F.softmax(new_words, dim=-1)
+    actual_words = torch.max(actual_words, dim=-1)[1]
+    _prev_word = actual_words.unsqueeze(-1)
+    print(_prev_word)
+    print("\n")
+
 
