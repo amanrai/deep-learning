@@ -10,7 +10,8 @@ from pytorch_pretrained_bert import BertModel
 import random
 import argparse
 parser = argparse.ArgumentParser(description='')
-parser.add_argument('--reuse-saved-model', type=str, help='model to continue training')
+saved_model = None
+parser.add_argument('--reuse-saved-model', type=str, dest =saved_model, help='model to continue training')
 parser.add_argument()
 
 
@@ -113,8 +114,9 @@ if (_cuda):
     print("Cuda is available.")
 print("Creating Model...")    
 sc = SummarizerCell(isCuda=_cuda)
-if (args["reuse-saved-model"] is not None):
-    sc.load_saved_dict(torch.load(args["reuse-saved-model"]))
+if (saved_model is not None):
+    print("Reusing weights from:", saved_model)
+    sc.load_saved_dict(torch.load(saved_model))
 
 optimizer = torch.optim.Adam(sc.parameters(), lr=1e-3)
 
