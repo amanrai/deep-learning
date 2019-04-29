@@ -25,9 +25,11 @@ class Seq2SeqCell(torch.nn.Module):
                  attention_dim = 512,
                  tf = True,
                  isCuda = True):
-        super(SummarizerCell, self).__init__()
+        super(Seq2SeqCell, self).__init__()
         self.bert_width = 768
         self.bert_model = bert_model
+        if ("-large-" in bert_model):
+            self.bert_width = 1024
         self.iscuda = isCuda
         self.teacherForcing = tf
         
@@ -38,10 +40,7 @@ class Seq2SeqCell(torch.nn.Module):
         self.embedding = torch.nn.Embedding(30000, self.bert_width)
         self.hsToVocab = torch.nn.Linear(self.bert_width, 30000)
 
-        if (self.iscuda):
-            self.bert = BertModel.from_pretrained(bert_model).cuda()
-        else:
-            self.bert = BertModel.from_pretrained(bert_model)
+
 
     def genHiddenState(self, size):
         if (self.iscuda):

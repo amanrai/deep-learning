@@ -17,6 +17,13 @@ _cuda = torch.cuda.is_available()
 s = SummarizerCell(isCuda=_cuda)
 if (_cuda):
     s.cuda()
+
+bert = None
+bert_model = "bert-base-uncased"
+if (_cuda):
+    bert = BertModel.from_pretrained(bert_model).cuda()
+else:
+    bert = BertModel.from_pretrained(bert_model)
 bs = 5
 
 d, se, m, su, po = genBatch(bs = bs,
@@ -36,7 +43,8 @@ _prev_word = _prev_word.repeat(bs, 1)
 gen_words = []
 gen_atts = []
 
-_d, _ = self.bert(d, se, m, output_all_encoded_layers = False)
+
+_d, _ = bert(d, se, m, output_all_encoded_layers = False)
 _d = _d * m.unsqueeze(-1).float()   
 
 for i in range(5):
