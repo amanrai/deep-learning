@@ -45,14 +45,17 @@ else:
 _prev_word = _prev_word.repeat(bs, 1)
 gen_words = []
 gen_atts = []
-coverages = []
 
+coverages = []
 gen_logits = []
 act_words = []
 _d, _ = bert(d, se, m, output_all_encoded_layers = False)
 _d = _d * m.unsqueeze(-1).float()   
 
 optimizer.zero_grad()
+coverage = torch.zeros((d.size()[0], d.size()[1]))
+zeros = torch.zeros((d.size()[0], d.size()[1]))
+
 for i in range(5):
     act_words.append(su[:,i])
     new_words, atts, _hs = s.forward(_d, _hs, _prev_word)
@@ -61,10 +64,15 @@ for i in range(5):
     _prev_word = actual_words.unsqueeze(-1)
     gen_words.append(_prev_word.detach())
     gen_atts.append(atts.detach())
+    coverages.append(coverage + zeros)
+    coverages = coverages + atts
     gen_logits.append(new_words)
+
 gen_logits = torch.stack(gen_logits, dim=0).view(-1, 30000)
 act_words = torch.stack(act_words, dim=0).view(-1).squeeze(-1)
 loss = wordCriterion(gen_logits, act_words)
 loss.backward()
+
 print(loss.data.item())
 optimizer.step()
+print(coverages)
