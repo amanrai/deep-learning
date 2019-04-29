@@ -17,7 +17,7 @@ def Attention(to_, from_, w, v):
 def ContextVector(input, attention):
     _i = input*attention
     print("Context Vector:",_i.size())
-    return torch.sum(_i, dim=-1)
+    return torch.sum(_i, dim=1)
 
 def gru_forward(gru_cell, input, hidden_state):
     out, hs = gru_cell(input, hidden_state)
@@ -60,10 +60,11 @@ class SummarizerCell(torch.nn.Module):
         dcv = ContextVector(_d, att)
         print("DCV:", dcv.size())
         _input = self.embedding(input)
-        #_input = _input.squeeze(1)
         print("FROM EMBEDDING:",_input.size())
+        _input = _input.squeeze(1)
+        print("Squeeze:", _input.size())
         _input = torch.cat([dcv, _input], dim=-1)
-        print(_input.size())
+        print("Cat:", _input.size())
 
         output, hs = gru_forward(self.gru, _input, last_hidden_state)
 
