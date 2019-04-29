@@ -71,7 +71,7 @@ def train(bs = 5,
 
             batch_losses.append(loss.data.item())
             _loss_str = "Epoch:" + str(epoch + 1) + \
-                        " (" + str(batch+1) + "/" + str(batches) + "); "
+                        " (" + str(batch+1) + "/" + str(batches) + "); " + \
                         "Loss:" + str(np.round(np.mean(batch_losses), 5))
             print(_loss_str, end="\r")
             optim.step()
