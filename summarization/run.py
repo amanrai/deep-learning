@@ -63,16 +63,17 @@ for i in range(5):
     actual_words = torch.max(actual_words, dim=-1)[1]
     _prev_word = actual_words.unsqueeze(-1)
     gen_words.append(_prev_word.detach())
-    gen_atts.append(atts.detach())
+    gen_atts.append(atts)
     coverages.append(coverage + zeros)
     coverage = coverage + atts.squeeze(-1)
     gen_logits.append(new_words)
 
 gen_logits = torch.stack(gen_logits, dim=0).view(-1, 30000)
 act_words = torch.stack(act_words, dim=0).view(-1).squeeze(-1)
+coverages = torch.stack(coverages, dim=0).view(-1, d.size()[1])
+gen_atts = torch.stack(gen_atts, dim=0).view(-1, d.size()[1])
 loss = wordCriterion(gen_logits, act_words)
 loss.backward()
 
 print(loss.data.item())
 optimizer.step()
-print(coverages)
