@@ -21,7 +21,7 @@ parser.add_argument('--summary_length', type=int, default=10)
 parser.add_argument('--doc_length', type=int, default=100)
 parser.add_argument('--bert_model', type=str, default="bert-base-uncased")
 parser.add_argument('--tf_rate', type=float, default=0.25)
-parser.add_argument('--lr', type=float, default=1e-2)
+parser.add_argument('--lr', type=float, default=1e-4)
 
 args = parser.parse_args()
 epochs = args.epochs
@@ -142,7 +142,7 @@ if (args.reuse_saved_model is not None):
     print("\treusing weights from:", args.reuse_saved_model)
     network.load_state_dict(torch.load(args.reuse_saved_model))
 
-optimizer = torch.optim.SGD(network.parameters(), lr=lr)
+optimizer = torch.optim.Adam(network.parameters(), lr=lr)
 
 if (_cuda):
     network.cuda()
