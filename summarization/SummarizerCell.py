@@ -38,6 +38,8 @@ class Seq2SeqDecoderCell(torch.nn.Module):
         self.attention_w = torch.nn.Linear(self.bert_width*2, attention_dim)
         self.attention_v = torch.nn.Linear(attention_dim, 1)
 
+        self.intra_w = torch.nn.Linear(self.bert_width*2, attention_dim)
+        self.intra_v = torch.nn.Linear(attention_dim, 1)
         self.embedding = output_embeddings
         if (output_embeddings == None):
             self.embedding = torch.nn.Embedding(30522, self.bert_width)
@@ -50,7 +52,9 @@ class Seq2SeqDecoderCell(torch.nn.Module):
         return _hs
 
     def forward(self, docs, last_hidden_state, input, previous_words):
-        print("In cell:", previous_words.size())               
+        _prev_emb = self.embedding(previous_words)
+        _prev_words_att = Attention(_prev_emb, last_hidden_state.unsqueeze(1), self.intra_w, self.intra_v)
+
         att = Attention(docs, last_hidden_state.unsqueeze(1), self.attention_w, self.attention_v)
         dcv = ContextVector(docs, att)
         _input = self.embedding(input)        
