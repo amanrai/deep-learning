@@ -90,6 +90,7 @@ def train(bs = 5,
                 actual_words = torch.max(actual_words, dim=-1)[1]
                 _prev_word = actual_words.unsqueeze(-1)
                 if (random.random() < teacher_forcing_rate):
+                    print("Teacher forcing!")
                     _prev_word = su[:,i].detach().unsqueeze(-1)
                 
                 gen_words.append(_prev_word)
