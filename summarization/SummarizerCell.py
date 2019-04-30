@@ -6,6 +6,7 @@ def Attention(to_, from_, w, v):
     if (from_.size()[1] > 1):
         assert "From is longer than one timestep!"
     print("To:", to_.size())
+    print("From:", from_.size())
     _f = from_.repeat(1, to_.size()[1], 1)
     print("From after repeat:", _f.size())
     _f = torch.cat([to_, _f], dim=-1)
