@@ -97,7 +97,7 @@ def train(bs = 5,
                 coverage = coverage + atts.squeeze(-1)
                 gen_logits.append(new_words)
 
-            gen_logits = torch.stack(gen_logits, dim=0)
+            gen_logits = torch.stack(gen_logits, dim=0).view(-1, 30522)
             act_words = torch.stack(act_words, dim=0).view(-1).squeeze(-1)
             coverages = torch.stack(coverages, dim=0).view(-1, d.size()[1])
             gen_atts = torch.stack(gen_atts, dim=0).view(-1, d.size()[1])
