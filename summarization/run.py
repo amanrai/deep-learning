@@ -91,8 +91,7 @@ def train(bs = 5,
                 _prev_word = actual_words.unsqueeze(-1)
                 if (random.random() < teacher_forcing_rate):
                     print("Teacher Forced!")
-                    _prev_word = su[:,i].detach()
-                    _prev_word.unsqueeze(-1)
+                    _prev_word = su[:,i].detach().unsqueeze(-1)
                 
                 print(_prev_word.size())
                 gen_words.append(_prev_word)
