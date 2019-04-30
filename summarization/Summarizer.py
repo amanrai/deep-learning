@@ -17,12 +17,12 @@ class BertSummarizer(torch.nn.Module):
             self.bert_width = 1024
         self._cuda = isCuda
         self.teacherForcing = tf
-        self.summarizer = SummarizerCell(isCuda=self._cuda)
+        
         if (self._cuda):
             self.bert = BertModel.from_pretrained(self.bert_model).cuda()
         else:
             self.bert = BertModel.from_pretrained(self.bert_model)
-        print(self.bert.embeddings.word_embeddings.size())
+        self.summarizer = SummarizerCell(isCuda=self._cuda, output_embeddings=self.bert.embeddings.word_embeddings)
 
     def genHiddenState(self, size):
         return self.summarizer.genHiddenState(size)
