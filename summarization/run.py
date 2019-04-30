@@ -76,13 +76,14 @@ def train(bs = 5,
             optimizer.zero_grad()
             
             _d = network.forwardBert(d, se, m)
-            
             coverage = torch.zeros((d.size()[0], d.size()[1])).cuda()
             zeros = torch.zeros((d.size()[0], d.size()[1])).cuda()
 
-            for i in range(max_summary_length):        
+            for i in range(max_summary_length):
+                _all_previous_words = torch.stack(gen_words, dim=0)
+                print(_all_previous_words.size())        
                 act_words.append(su[:,i])
-                new_words, atts, _hs = network.forwardSummary(_d, _hs, _prev_word, gen_words)
+                new_words, atts, _hs = network.forwardSummary(_d, _hs, _prev_word, _all_previous_words)
                 actual_words = F.softmax(new_words, dim=-1)
                 actual_words = torch.max(actual_words, dim=-1)[1]
                 _prev_word = actual_words.unsqueeze(-1)
@@ -97,6 +98,7 @@ def train(bs = 5,
                 
                 coverage = coverage + atts.squeeze(-1)
                 gen_logits.append(new_words)
+
 
             gen_logits = torch.stack(gen_logits, dim=0).view(-1, 30522)
             act_words = torch.stack(act_words, dim=0).view(-1).squeeze(-1)
