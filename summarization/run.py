@@ -66,6 +66,7 @@ def train(bs = 5,
                 _prev_word = torch.LongTensor([101]).cuda()
 
             _prev_word = _prev_word.repeat(bs, 1)
+            _prev_word = _prev_word.unsqueeze(-1)
             gen_words = []
             gen_words.append(_prev_word.unsqueeze(-1))
             gen_atts = []
@@ -80,8 +81,7 @@ def train(bs = 5,
             zeros = torch.zeros((d.size()[0], d.size()[1])).cuda()
 
             for i in range(max_summary_length):
-                _all_previous_words = torch.stack(gen_words, dim=0)
-                print(_all_previous_words.size())        
+                _all_previous_words = torch.stack(gen_words)        
                 act_words.append(su[:,i])
                 new_words, atts, _hs = network.forwardSummary(_d, _hs, _prev_word, _all_previous_words)
                 actual_words = F.softmax(new_words, dim=-1)
