@@ -142,7 +142,7 @@ if (args.reuse_saved_model is not None):
     print("\treusing weights from:", args.reuse_saved_model)
     network.load_state_dict(torch.load(args.reuse_saved_model))
 
-optimizer = torch.optim.Adam(network.parameters(), lr=lr)
+optimizer = torch.optim.SGD(network.parameters(), lr=lr)
 
 if (_cuda):
     network.cuda()
