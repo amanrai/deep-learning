@@ -5,10 +5,7 @@ import torch.nn.functional as F
 def Attention(to_, from_, w, v):
     if (from_.size()[1] > 1):
         assert "From is longer than one timestep!"
-    print("To:", to_.size())
-    print("From:", from_.size())
     _f = from_.repeat(1, to_.size()[1], 1)
-    print("From after repeat:", _f.size())
     _f = torch.cat([to_, _f], dim=-1)
     _o = torch.tanh(w(_f))
     return F.softmax(v(_o), dim=1)
@@ -36,7 +33,7 @@ class Seq2SeqDecoderCell(torch.nn.Module):
         self.iscuda = isCuda
         self.teacherForcing = tf
         
-        self.gru = torch.nn.GRUCell(self.bert_width * 2, self.bert_width)
+        self.gru = torch.nn.GRUCell(self.bert_width * 3, self.bert_width)
         self.attention_w = torch.nn.Linear(self.bert_width*2, attention_dim)
         self.attention_v = torch.nn.Linear(attention_dim, 1)
 
@@ -56,11 +53,15 @@ class Seq2SeqDecoderCell(torch.nn.Module):
     def forward(self, docs, last_hidden_state, input, previous_words):
         _prev_emb = self.embedding(previous_words)
         _prev_words_att = Attention(_prev_emb, last_hidden_state.unsqueeze(1), self.intra_w, self.intra_v)
+        intra_cv = ContextVector(_prev_emb, _prev_words_att)
+
         att = Attention(docs, last_hidden_state.unsqueeze(1), self.attention_w, self.attention_v)
         dcv = ContextVector(docs, att)
+
         _input = self.embedding(input)        
         _input = _input.squeeze(1)        
-        _input = torch.cat([dcv, _input], dim=-1)        
+        _input = torch.cat([dcv, intra_cv, _input], dim=-1)
+                
         hs = gru_forward(self.gru, _input, last_hidden_state)
         word = torch.matmul(hs, self.embedding.weight.transpose(-2,-1))
         return word, att, hs

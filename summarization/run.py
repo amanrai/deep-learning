@@ -83,17 +83,15 @@ def train(bs = 5,
                 _all_previous_words = gen_words[0]
                 if (len(gen_words) > 1):
                     _all_previous_words = torch.stack(gen_words, dim=1).squeeze(-1)
-                    print(_all_previous_words.size())        
+                         
                 act_words.append(su[:,i])
                 new_words, atts, _hs = network.forwardSummary(_d, _hs, _prev_word, _all_previous_words)
                 actual_words = F.softmax(new_words, dim=-1)
                 actual_words = torch.max(actual_words, dim=-1)[1]
                 _prev_word = actual_words.unsqueeze(-1)
                 if (random.random() < teacher_forcing_rate):
-                    print("Teacher forcing!")
                     _prev_word = su[:,i].detach().unsqueeze(-1)
                 
-                print(_prev_word.size())
                 gen_words.append(_prev_word)
 
                 if (i > 0): #coverage loss will be 0 for the first step. 
