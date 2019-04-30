@@ -37,11 +37,8 @@ def genBatch(bs = 5, validation = False, data = None, _cuda=True, max_doc_length
             doc.append(0)
         doc = doc[:max_doc_length]
         documents.append(doc)
-    #print(documents)  
     
-    #print(indices)
     sums = [data[index]["summary_tokens"] for index in indices]
-    #print(sums)
     for k in range(len(sums)):
         summ = sums[k]
         _point = _pointers[k]

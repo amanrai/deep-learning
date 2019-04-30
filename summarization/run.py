@@ -28,7 +28,7 @@ epochs = args.epochs
 batches_per_epoch = args.batches_per_epoch
 max_doc_length = args.doc_length
 max_summary_length = args.summary_length
-_bs = args.bs
+_bs = args.bs 
 bert_model = args.bert_model
 tf_rate = args.tf_rate
 lr = args.lr
@@ -81,7 +81,7 @@ def train(bs = 5,
 
             for i in range(max_summary_length):        
                 act_words.append(su[:,i])
-                new_words, atts, _hs = network.forwardSummary(_d, _hs, _prev_word)
+                new_words, atts, _hs = network.forwardSummary(_d, _hs, _prev_word, gen_words)
                 actual_words = F.softmax(new_words, dim=-1)
                 actual_words = torch.max(actual_words, dim=-1)[1]
                 _prev_word = actual_words.unsqueeze(-1)
@@ -124,7 +124,9 @@ all_data = pickle.load(open("./training_0.pickle", "rb"))
 
 _cuda = torch.cuda.is_available()
 if (_cuda):
-    print("Cuda is available.")
+    print("Cuda is available:", torch.cuda.device_count(), "GPUs.")
+    _bs = args.bs * torch.cuda.device_count()
+
 print("Creating Model...")    
 
 network = BertSummarizer(isCuda = _cuda)

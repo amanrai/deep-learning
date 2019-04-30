@@ -49,16 +49,14 @@ class Seq2SeqDecoderCell(torch.nn.Module):
             _hs = torch.zeros(size)
         return _hs
 
-    def forward(self, docs, last_hidden_state, input):                 
+    def forward(self, docs, last_hidden_state, input, previous_words):
+        _prev_collection = self.embedding(previous_words)
+        print(_prev_collection.size())                 
         att = Attention(docs, last_hidden_state.unsqueeze(1), self.attention_w, self.attention_v)
         dcv = ContextVector(docs, att)
-
         _input = self.embedding(input)        
         _input = _input.squeeze(1)        
         _input = torch.cat([dcv, _input], dim=-1)        
-        
         hs = gru_forward(self.gru, _input, last_hidden_state)
-        
         word = torch.matmul(hs, self.embedding.weight.transpose(-2,-1))
-    
         return word, att, hs

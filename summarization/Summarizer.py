@@ -32,5 +32,5 @@ class BertSummarizer(torch.nn.Module):
         _d = _d * m.unsqueeze(-1).float()
         return _d
 
-    def forwardSummary(self, _d, _hs, _prev_word):
-        return self.summarizer.forward(_d, _hs, _prev_word)
+    def forwardSummary(self, _d, _hs, _prev_word, previous_words):
+        return self.summarizer.forward(_d, _hs, _prev_word, previous_words)
