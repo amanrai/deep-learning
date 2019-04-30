@@ -61,7 +61,6 @@ class Seq2SeqDecoderCell(torch.nn.Module):
         
         hs = gru_forward(self.gru, _input, last_hidden_state)
         
-        print(self.embedding.weight.transpose(-2,-1).size())
         word = torch.matmul(hs, self.embedding.weight.transpose(-2,-1))
     
         return word, att, hs

@@ -82,7 +82,6 @@ def train(bs = 5,
             for i in range(max_summary_length):        
                 act_words.append(su[:,i])
                 new_words, atts, _hs = network.forwardSummary(_d, _hs, _prev_word)
-                print(new_words.size())
                 actual_words = F.softmax(new_words, dim=-1)
                 actual_words = torch.max(actual_words, dim=-1)[1]
                 _prev_word = actual_words.unsqueeze(-1)
@@ -98,7 +97,7 @@ def train(bs = 5,
                 coverage = coverage + atts.squeeze(-1)
                 gen_logits.append(new_words)
 
-            gen_logits = torch.stack(gen_logits, dim=0).view(-1, 30000)
+            gen_logits = torch.stack(gen_logits, dim=0)
             act_words = torch.stack(act_words, dim=0).view(-1).squeeze(-1)
             coverages = torch.stack(coverages, dim=0).view(-1, d.size()[1])
             gen_atts = torch.stack(gen_atts, dim=0).view(-1, d.size()[1])
