@@ -67,6 +67,7 @@ def train(bs = 5,
 
             _prev_word = _prev_word.repeat(bs, 1)
             gen_words = []
+            gen_words.append(_prev_word)
             gen_atts = []
             coverages = []
             gen_logits = []
