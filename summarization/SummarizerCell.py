@@ -53,6 +53,7 @@ class Seq2SeqDecoderCell(torch.nn.Module):
 
     def forward(self, docs, last_hidden_state, input, previous_words):
         _prev_emb = self.embedding(previous_words)
+        print(_prev_emb.size(), last_hidden_state.size())
         _prev_words_att = Attention(_prev_emb, last_hidden_state.unsqueeze(1), self.intra_w, self.intra_v)
 
         att = Attention(docs, last_hidden_state.unsqueeze(1), self.attention_w, self.attention_v)
