@@ -8,7 +8,7 @@ def Attention(to_, from_, w, v):
     
     _f = from_.repeat(1, to_.size()[1], 1)
     _f = torch.cat([to_, _f], dim=-1)
-    _o = w(_f)
+    _o = torch.tanh(w(_f))
     return F.softmax(v(_o), dim=1)
 
 def ContextVector(input, attention):
