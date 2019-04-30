@@ -23,7 +23,7 @@ class BertSummarizer(torch.nn.Module):
         else:
             _bert = BertModel.from_pretrained(self.bert_model)
 
-    def getHiddenState(self,size):
+    def genHiddenState(self,size):
         return self.summarizer.getHiddenState(size)
 
     def forwardBert(self, d, se, m):
