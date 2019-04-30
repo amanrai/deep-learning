@@ -19,11 +19,11 @@ class BertSummarizer(torch.nn.Module):
         self.teacherForcing = tf
         self.summarizer = SummarizerCell(isCuda=self._cuda)
         if (self._cuda):
-            _bert = BertModel.from_pretrained(self.bert_model).cuda()
+            self.bert = BertModel.from_pretrained(self.bert_model).cuda()
         else:
-            _bert = BertModel.from_pretrained(self.bert_model)
+            self.bert = BertModel.from_pretrained(self.bert_model)
 
-    def genHiddenState(self,size):
+    def genHiddenState(self, size):
         return self.summarizer.genHiddenState(size)
 
     def forwardBert(self, d, se, m):
