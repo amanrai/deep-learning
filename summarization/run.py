@@ -75,10 +75,7 @@ def train(bs = 5,
             optimizer.zero_grad()
             
             _d = network.forwardBert(d, se, m)
-            """
-            _d, _ = bert(d, se, m, output_all_encoded_layers = False)
-            _d = _d * m.unsqueeze(-1).float()   
-            """
+            
             coverage = torch.zeros((d.size()[0], d.size()[1])).cuda()
             zeros = torch.zeros((d.size()[0], d.size()[1])).cuda()
 
@@ -132,11 +129,8 @@ _cuda = torch.cuda.is_available()
 if (_cuda):
     print("Cuda is available.")
 print("Creating Model...")    
-"""
-sc = SummarizerCell(isCuda=_cuda)
-"""
+
 network = BertSummarizer(isCuda = _cuda)
-#network = torch.nn.DataParallel(network)
 
 if (args.reuse_saved_model is not None):
     print("\treusing weights from:", args.reuse_saved_model)
