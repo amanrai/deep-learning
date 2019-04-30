@@ -94,6 +94,7 @@ def train(bs = 5,
                     _prev_word = su[:,i].detach()
                     _prev_word.unsqueeze(-1)
                 
+                print(_prev_word.size())
                 gen_words.append(_prev_word)
 
                 if (i > 0): #coverage loss will be 0 for the first step. 
