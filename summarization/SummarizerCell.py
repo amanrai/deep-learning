@@ -52,7 +52,7 @@ class Seq2SeqDecoderCell(torch.nn.Module):
     def forward(self, docs, last_hidden_state, input, previous_words):
         if (len(previous_words) > 0):
             _prev_collection = torch.stack(previous_words, dim=-1)
-        print(_prev_collection.size())                 
+            print(_prev_collection.size())                 
         att = Attention(docs, last_hidden_state.unsqueeze(1), self.attention_w, self.attention_v)
         dcv = ContextVector(docs, att)
         _input = self.embedding(input)        
