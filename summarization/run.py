@@ -91,11 +91,9 @@ def train(bs = 5,
                 _prev_word = actual_words.unsqueeze(-1)
                 if (random.random() < teacher_forcing_rate):
                     _prev_word = su[:,i].detach()
+                    _prev_word.unsqueeze(-1)
                 
-                _xword = _prev_word.detach()
-                if (len(_xword.size()) == 1):
-                    _xword.unsqueeze(-1)
-                gen_words.append(_xword)
+                gen_words.append(_prev_word)
 
                 if (i > 0): #coverage loss will be 0 for the first step. 
                     gen_atts.append(atts)
