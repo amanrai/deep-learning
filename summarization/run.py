@@ -133,7 +133,7 @@ print("Creating Model...")
 sc = SummarizerCell(isCuda=_cuda)
 """
 network = BertSummarizer(isCuda = _cuda)
-#network = torch.nn.DataParallel(network)
+network = torch.nn.DataParallel(network)
 
 if (args.reuse_saved_model is not None):
     print("\treusing weights from:", args.reuse_saved_model)

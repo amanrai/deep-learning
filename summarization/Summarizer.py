@@ -15,10 +15,10 @@ class BertSummarizer(torch.nn.Module):
         self.bert_model = bert_model
         if ("-large-" in bert_model):
             self.bert_width = 1024
-        self.cuda = isCuda
+        self._cuda = isCuda
         self.teacherForcing = tf
-        self.summarizer = SummarizerCell(isCuda=self.cuda)
-        if (self.cuda):
+        self.summarizer = SummarizerCell(isCuda=self._cuda)
+        if (self._cuda):
             _bert = BertModel.from_pretrained(self.bert_model).cuda()
         else:
             _bert = BertModel.from_pretrained(self.bert_model)
