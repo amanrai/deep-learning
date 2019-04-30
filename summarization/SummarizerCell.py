@@ -7,6 +7,7 @@ def Attention(to_, from_, w, v):
         assert "From is longer than one timestep!"
     
     _f = from_.repeat(1, to_.size()[1], 1)
+    print(_f.size())
     _f = torch.cat([to_, _f], dim=-1)
     _o = torch.tanh(w(_f))
     return F.softmax(v(_o), dim=1)
@@ -55,7 +56,7 @@ class Seq2SeqDecoderCell(torch.nn.Module):
         print(previous_words.size())
         _prev_emb = self.embedding(previous_words)
         print(_prev_emb.size(), last_hidden_state.size())
-        _prev_words_att = Attention(_prev_emb, last_hidden_state.unsqueeze(1), self.intra_w, self.intra_v)
+        _prev_words_att = Attention(_prev_emb, last_hidden_state.unsqueeze(-1), self.intra_w, self.intra_v)
 
         att = Attention(docs, last_hidden_state, self.attention_w, self.attention_v)
         dcv = ContextVector(docs, att)
