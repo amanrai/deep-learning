@@ -22,6 +22,7 @@ class BertSummarizer(torch.nn.Module):
             self.bert = BertModel.from_pretrained(self.bert_model).cuda()
         else:
             self.bert = BertModel.from_pretrained(self.bert_model)
+        print(self.bert.emeddings.word_embeddings.size())
 
     def genHiddenState(self, size):
         return self.summarizer.genHiddenState(size)
