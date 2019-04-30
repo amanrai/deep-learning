@@ -93,7 +93,7 @@ def train(bs = 5,
                     _prev_word = su[:,i].detach()
                 
                 _xword = _prev_word.detach()
-                if (len(_xword.size() == 1):
+                if (len(_xword.size()) == 1):
                     _xword.unsqueeze(-1)
                 gen_words.append(_xword)
 
