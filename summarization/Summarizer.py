@@ -5,7 +5,7 @@ from pytorch_pretrained_bert import BertTokenizer
 from pytorch_pretrained_bert import BertModel
 import random
 
-class BertSummarizer(torch.nn.module):
+class BertSummarizer(torch.nn.Module):
     def __init__(self, 
                  bert_model = "bert-base-uncased",
                  tf = True,
