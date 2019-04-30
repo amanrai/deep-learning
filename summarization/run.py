@@ -21,7 +21,7 @@ parser.add_argument('--summary_length', type=int, default=10)
 parser.add_argument('--doc_length', type=int, default=100)
 parser.add_argument('--bert_model', type=str, default="bert-base-uncased")
 parser.add_argument('--tf_rate', type=float, default=0.25)
-parser.add_argument('--lr', type=float, default=1e-3)
+parser.add_argument('--lr', type=float, default=1e-2)
 
 args = parser.parse_args()
 epochs = args.epochs
