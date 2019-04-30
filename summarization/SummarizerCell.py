@@ -40,9 +40,7 @@ class Seq2SeqDecoderCell(torch.nn.Module):
 
         self.embedding = output_embeddings
         if (output_embeddings == None):
-            self.embedding = torch.nn.Embedding(30000, self.bert_width)
-
-        #self.hsToVocab = torch.nn.Linear(self.bert_width, 30000)
+            self.embedding = torch.nn.Embedding(30522, self.bert_width)
 
     def genHiddenState(self, size):
         if (self.iscuda):
