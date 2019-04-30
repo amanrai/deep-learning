@@ -66,7 +66,6 @@ def train(bs = 5,
                 _prev_word = torch.LongTensor([101]).cuda()
 
             _prev_word = _prev_word.repeat(bs, 1)
-            _prev_word = _prev_word
             gen_words = []
             gen_words.append(_prev_word)
             gen_atts = []
@@ -93,6 +92,7 @@ def train(bs = 5,
                     print("Teacher forcing!")
                     _prev_word = su[:,i].detach().unsqueeze(-1)
                 
+                print(_prev_word.size())
                 gen_words.append(_prev_word)
 
                 if (i > 0): #coverage loss will be 0 for the first step. 
