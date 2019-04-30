@@ -5,9 +5,9 @@ import torch.nn.functional as F
 def Attention(to_, from_, w, v):
     if (from_.size()[1] > 1):
         assert "From is longer than one timestep!"
-    
+    print("To:", to_.size())
     _f = from_.repeat(1, to_.size()[1], 1)
-    print(_f.size())
+    print("From after repeat:", _f.size())
     _f = torch.cat([to_, _f], dim=-1)
     _o = torch.tanh(w(_f))
     return F.softmax(v(_o), dim=1)
