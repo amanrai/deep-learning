@@ -81,7 +81,7 @@ def train(bs = 5,
             zeros = torch.zeros((d.size()[0], d.size()[1])).cuda()
 
             for i in range(max_summary_length):
-                _all_previous_words = gen_words[0].unsqueeze(-1)
+                _all_previous_words = gen_words[0]
                 if (len(gen_words) > 1):
                     _all_previous_words = torch.stack(gen_words, dim=1)        
                 act_words.append(su[:,i])
