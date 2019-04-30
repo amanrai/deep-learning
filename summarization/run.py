@@ -3,6 +3,7 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 from SummarizerCell import Seq2SeqDecoderCell as SummarizerCell
+from Summarizer import BertSummarizer
 from dataOps import *
 from losses import *
 from pytorch_pretrained_bert import BertTokenizer
@@ -37,7 +38,6 @@ def train(bs = 5,
             batches = 1000,
             network=None, 
             _data=None, 
-            bert=None, 
             optim = None,
             cuda = True,
             teacher_forcing_rate = 0.25,
@@ -72,16 +72,19 @@ def train(bs = 5,
             gen_logits = []
             act_words = []
 
+            optimizer.zero_grad()
+            
+            _d = network.forwardBert(d, se, m)
+            """
             _d, _ = bert(d, se, m, output_all_encoded_layers = False)
             _d = _d * m.unsqueeze(-1).float()   
-
-            optimizer.zero_grad()
+            """
             coverage = torch.zeros((d.size()[0], d.size()[1])).cuda()
             zeros = torch.zeros((d.size()[0], d.size()[1])).cuda()
 
             for i in range(max_summary_length):        
                 act_words.append(su[:,i])
-                new_words, atts, _hs = network.forward(_d, _hs, _prev_word)
+                new_words, atts, _hs = network.forwardSummary(_d, _hs, _prev_word)
                 actual_words = F.softmax(new_words, dim=-1)
                 actual_words = torch.max(actual_words, dim=-1)[1]
                 _prev_word = actual_words.unsqueeze(-1)
@@ -126,31 +129,27 @@ _cuda = torch.cuda.is_available()
 if (_cuda):
     print("Cuda is available.")
 print("Creating Model...")    
+"""
 sc = SummarizerCell(isCuda=_cuda)
-network = torch.nn.DataParallel(sc)
+"""
+network = BertSummarizer(isCuda = _cuda)
+network = torch.nn.DataParallel(network)
 
 if (args.reuse_saved_model is not None):
     print("\treusing weights from:", args.reuse_saved_model)
-    sc.load_state_dict(torch.load(args.reuse_saved_model))
+    network.load_state_dict(torch.load(args.reuse_saved_model))
 
-optimizer = torch.optim.Adam(sc.parameters(), lr=lr)
+optimizer = torch.optim.Adam(network.parameters(), lr=lr)
 
 if (_cuda):
-    sc.cuda()
-
-_bert = None
-if (_cuda):
-    _bert = BertModel.from_pretrained(bert_model).cuda()
-else:
-    _bert = BertModel.from_pretrained(bert_model)
+    network.cuda()
 
 print("Training...\n")
 train(bs=_bs, 
         epochs = epochs,
         batches = batches_per_epoch,
-        network=sc, 
-        _data=all_data, 
-        bert=_bert, 
+        network=network, 
+        _data=all_data,  
         optim=optimizer, 
         cuda=_cuda,
         teacher_forcing_rate=tf_rate)
