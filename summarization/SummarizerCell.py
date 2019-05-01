@@ -23,10 +23,13 @@ class Seq2SeqDecoderCell(torch.nn.Module):
                  bert_model = "bert-base-uncased",
                  output_embeddings=None,
                  attention_dim = 512,
+                 bert_width=768,
                  tf = True,
                  isCuda = True):
         super(Seq2SeqDecoderCell, self).__init__()
         
+        self.bert_width = bert_width
+
         self.gru = torch.nn.GRUCell(self.bert_width * 3, self.bert_width)
         self.attention_w = torch.nn.Linear(self.bert_width*2, attention_dim)
         self.attention_v = torch.nn.Linear(attention_dim, 1)
