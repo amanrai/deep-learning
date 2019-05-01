@@ -56,6 +56,7 @@ with torch.no_grad():
         words, atts, hs = network.forwardSummary(_d, _hs, _prev_word, _all_previous_words)
         _words = F.softmax(words, dim=-1)
         _words = torch.topk(_words, 1, dim=-1)[1]
+        _prev_word = _words
         gen_words.append(_prev_word)
     print("\n\nActuals")
     print(su)
