@@ -48,6 +48,7 @@ with torch.no_grad():
     _d = network.forwardBert(d, se, m)
     _hs = network.genHiddenState((d.size()[0], 768))    
     gen_words = []
+    beams = []
     gen_words.append(_prev_word)
     for i in range(10):
         _all_previous_words = gen_words[0]
@@ -55,14 +56,17 @@ with torch.no_grad():
             _all_previous_words = torch.stack(gen_words, dim=1).squeeze(-1)
         words, atts, hs = network.forwardSummary(_d, _hs, _prev_word, _all_previous_words)
         _words = F.softmax(words, dim=-1)
-        _words = torch.topk(_words, 1, dim=-1)[1]
-        _prev_word = _words
+        _xword = torch.topk(_words, 1, dim=-1)[1]
+        _prev_word = _xword
+        beams.append(torch.topk(_words, 5, dim=-1))[1]
         gen_words.append(_prev_word)
+
     print("\n\nActuals")
     print(su)
     print("\n\nPredictions:")
     gen_words = torch.stack(gen_words)
     print(gen_words.size())
     print(gen_words.flatten().detach().cpu().numpy()[1:])
-    
+    beams = torch.stack(beams, dim=1)
+    print(beams.detach().cpu().numpy())
     
