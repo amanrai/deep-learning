@@ -32,7 +32,7 @@ print("Loading Model...")
 network = BertSummarizer(isCuda = _cuda)
 network.load_state_dict(torch.load(args.eval_model))
 network.eval()
-d, se, m, su, po = genBatch(bs=1, data=testing)
+d, se, m, su, po = genBatch(bs=2, data=testing)
 with torch.no_grad():
     _d = network.forwardBert(d, se, m)
     _hs = network.genHiddenState((d.size()[0], 768))
