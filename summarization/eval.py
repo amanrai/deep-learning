@@ -32,5 +32,5 @@ print("Loading Model...")
 network = BertSummarizer(isCuda = _cuda)
 network.load_state_dict(torch.load(args.eval_model))
 
-d, se, m, su, po = genBatch(bs=1)
+d, se, m, su, po = genBatch(bs=1, data=testing)
 print(d)
