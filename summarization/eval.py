@@ -12,4 +12,4 @@ import random
 import argparse
 
 testing = pickle.load(open("./network_testing.pickle", "rb"))
-
+print(len(testing))
