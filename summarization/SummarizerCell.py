@@ -39,9 +39,10 @@ class Seq2SeqDecoderCell(torch.nn.Module):
 
         self.intra_w = torch.nn.Linear(self.bert_width*2, attention_dim)
         self.intra_v = torch.nn.Linear(attention_dim, 1)
+
         self.embedding = output_embeddings
         if (output_embeddings == None):
-            self.embedding = torch.nn.Embedding(30522, self.bert_width)
+            self.embedding = torch.nn.Embedding(30522, self.bert_width) #30522 is the size of the bert base uncased vocabulary
 
     def genHiddenState(self, size):
         if (self.iscuda):
@@ -50,18 +51,24 @@ class Seq2SeqDecoderCell(torch.nn.Module):
             _hs = torch.zeros(size)
         return _hs
 
-    def forward(self, docs, last_hidden_state, input, previous_words):
+    def forward(self, docs, last_hidden_state, last_Word, previous_words):
+        #intra decoder attention
         _prev_emb = self.embedding(previous_words)
         _prev_words_att = Attention(_prev_emb, last_hidden_state.unsqueeze(1), self.intra_w, self.intra_v)
         intra_cv = ContextVector(_prev_emb, _prev_words_att)
 
+        #document to decoder attention
         att = Attention(docs, last_hidden_state.unsqueeze(1), self.attention_w, self.attention_v)
         dcv = ContextVector(docs, att)
 
-        _input = self.embedding(input)        
-        _input = _input.squeeze(1)        
-        _input = torch.cat([dcv, intra_cv, _input], dim=-1)
-                
-        hs = gru_forward(self.gru, _input, last_hidden_state)
+        #GRU
+        _last_Word = self.embedding(last_Word)        
+        _last_Word = _last_Word.squeeze(1)        
+        _last_Word = torch.cat([dcv, intra_cv, _last_Word], dim=-1)
+            
+        hs = gru_forward(self.gru, _last_Word, last_hidden_state)
+
+        #final word prediction
         word = torch.matmul(hs, self.embedding.weight.transpose(-2,-1))
+
         return word, att, hs
