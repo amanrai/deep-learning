@@ -65,8 +65,8 @@ with torch.no_grad():
     print(su)
     print("\n\nPredictions:")
     gen_words = torch.stack(gen_words)
-    print(gen_words.size())
     print(gen_words.flatten().detach().cpu().numpy()[1:])
+    print("\n\n\nPotential Beams")
     beams = torch.stack(beams, dim=1)
     print(beams.detach().cpu().numpy())
     
