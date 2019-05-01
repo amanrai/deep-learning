@@ -62,6 +62,7 @@ with torch.no_grad():
     print(su)
     print("\n\nPredictions:")
     gen_words = torch.stack(gen_words)
+    print(gen_words.size())
     print(gen_words.detach().cpu().numpy())
     
     
