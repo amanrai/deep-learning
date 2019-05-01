@@ -18,6 +18,11 @@ parser.add_argument('--eval_model',
                     help='model to continue training', 
                     default="summarizer_BestTrainingLoss.h5")
 
+parser.add_argument('--bs', 
+                    type=int, 
+                    help='batch size', 
+                    default=2)
+
 args = parser.parse_args()
 
 testing = pickle.load(open("./network_testing.pickle", "rb"))
@@ -32,9 +37,9 @@ print("Loading Model...")
 network = BertSummarizer(isCuda = _cuda)
 network.load_state_dict(torch.load(args.eval_model))
 network.eval()
-d, se, m, su, po = genBatch(bs=2, data=testing)
+d, se, m, su, po = genBatch(bs=args.bs, data=testing)
 _prev_word = torch.LongTensor([101]).cuda()
-_prev_word = _prev_word.repeat(bs, 1)
+_prev_word = _prev_word.repeat(args.bs, 1)
 with torch.no_grad():
     _d = network.forwardBert(d, se, m)
     _hs = network.genHiddenState((d.size()[0], 768))    
