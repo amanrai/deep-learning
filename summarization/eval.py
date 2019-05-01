@@ -21,7 +21,7 @@ parser.add_argument('--eval_model',
 parser.add_argument('--bs', 
                     type=int, 
                     help='batch size', 
-                    default=2)
+                    default=5)
 
 args = parser.parse_args()
 
@@ -55,7 +55,10 @@ with torch.no_grad():
     print(_all_previous_words.size())
     words, atts, hs = network.forwardSummary(_d, _hs, _prev_word, _all_previous_words)
     _words = F.softmax(words, dim=-1)
-    _words = torch.topk(_words, 5, dim=-1)
-    print(_words)
+    _words = torch.topk(_words, 5, dim=-1)[1]
+    print("\n\nActuals")
     print(su[:,0])
+    print("\n\nPredictions:", _words)
+    print(_words)
+    
     
