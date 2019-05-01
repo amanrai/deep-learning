@@ -54,7 +54,7 @@ with torch.no_grad():
         _all_previous_words = gen_words[0]
         if (len(gen_words) > 1):
             _all_previous_words = torch.stack(gen_words, dim=1).squeeze(-1)
-        words, atts, hs = network.forwardSummary(_d, _hs, _prev_word, _all_previous_words)
+        words, atts, _hs = network.forwardSummary(_d, _hs, _prev_word, _all_previous_words)
         _words = F.softmax(words, dim=-1)
         _xword = torch.topk(_words, 1, dim=-1)[1]
         _prev_word = _xword
