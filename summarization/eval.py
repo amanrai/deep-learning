@@ -31,6 +31,16 @@ print("Loading Model...")
 
 network = BertSummarizer(isCuda = _cuda)
 network.load_state_dict(torch.load(args.eval_model))
-
+network.eval_model()
 d, se, m, su, po = genBatch(bs=1, data=testing)
-print(d)
+with torch.no_grad():
+    _d = network.forwardBert(d, se, m)
+    _hs = network.genHiddenState((d.size()[0], 768))
+    _prev_word = torch.LongTensor([101]).cuda()
+    gen_words = []
+    gen_words.append(_prev_word)
+    _all_previous_words = gen_words[0]
+    if (len(gen_words) > 1):
+        _all_previous_words = torch.stack(gen_words, dim=1).squeeze(-1)
+    words, atts, hs = network.forwardSummary(_d, _hs, _prev_word, _all_previous_words)
+    print(words)

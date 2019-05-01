@@ -63,7 +63,7 @@ def train(bs = 5,
             if (cuda):
                 _prev_word = torch.LongTensor([101]).cuda()
             else:
-                _prev_word = torch.LongTensor([101]).cuda()
+                _prev_word = torch.LongTensor([101])
 
             _prev_word = _prev_word.repeat(bs, 1)
             gen_words = []
