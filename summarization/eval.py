@@ -26,7 +26,6 @@ print(len(testing))
 _cuda = torch.cuda.is_available()
 if (_cuda):
     print("Cuda is available:", torch.cuda.device_count(), "GPUs.")
-    _bs = args.bs * torch.cuda.device_count()
 
 print("Loading Model...")    
 
