@@ -49,16 +49,17 @@ with torch.no_grad():
     _hs = network.genHiddenState((d.size()[0], 768))    
     gen_words = []
     gen_words.append(_prev_word)
-    _all_previous_words = gen_words[0]
-    if (len(gen_words) > 1):
-        _all_previous_words = torch.stack(gen_words, dim=1).squeeze(-1)
-    words, atts, hs = network.forwardSummary(_d, _hs, _prev_word, _all_previous_words)
-    _words = F.softmax(words, dim=-1)
-    _words = torch.topk(_words, 1, dim=-1)[1]
-    gen_words.append(_prev_word)
+    for i in range(10):
+        _all_previous_words = gen_words[0]
+        if (len(gen_words) > 1):
+            _all_previous_words = torch.stack(gen_words, dim=1).squeeze(-1)
+        words, atts, hs = network.forwardSummary(_d, _hs, _prev_word, _all_previous_words)
+        _words = F.softmax(words, dim=-1)
+        _words = torch.topk(_words, 1, dim=-1)[1]
+        gen_words.append(_prev_word)
     print("\n\nActuals")
     print(su[:,0])
     print("\n\nPredictions:")
-    print(_words)
+    print(gen_words)
     
     
