@@ -37,7 +37,9 @@ print("Loading Model...")
 network = BertSummarizer(isCuda = _cuda)
 network.load_state_dict(torch.load(args.eval_model))
 network.eval()
-d, se, m, su, po = genBatch(bs=args.bs, data=testing)
+d, se, m, su, po = genBatch(bs=args.bs, 
+                            data=testing,
+                            _cuda=_cuda)
 _prev_word = torch.LongTensor([101]).cuda()
 _prev_word = _prev_word.repeat(args.bs, 1)
 with torch.no_grad():
