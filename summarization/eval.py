@@ -58,7 +58,7 @@ with torch.no_grad():
         _words = F.softmax(words, dim=-1)
         _xword = torch.topk(_words, 1, dim=-1)[1]
         _prev_word = _xword
-        beams.append(torch.topk(_words, 5, dim=-1))[1]
+        beams.append(torch.topk(_words, 5, dim=-1)[1])
         gen_words.append(_prev_word)
 
     print("\n\nActuals")
