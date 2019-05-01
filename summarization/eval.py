@@ -42,5 +42,7 @@ with torch.no_grad():
     _all_previous_words = gen_words[0]
     if (len(gen_words) > 1):
         _all_previous_words = torch.stack(gen_words, dim=1).squeeze(-1)
+    print(_all_previous_words.size())
     words, atts, hs = network.forwardSummary(_d, _hs, _prev_word, _all_previous_words)
+
     print(words)
