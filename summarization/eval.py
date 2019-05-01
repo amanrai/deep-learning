@@ -54,7 +54,7 @@ with torch.no_grad():
         _all_previous_words = torch.stack(gen_words, dim=1).squeeze(-1)
     words, atts, hs = network.forwardSummary(_d, _hs, _prev_word, _all_previous_words)
     _words = F.softmax(words, dim=-1)
-    _words = torch.topk(_words, 10, dim=-1)[1]
+    _words = torch.topk(_words, 3, dim=-1)[1]
     print("\n\nActuals")
     print(su[:,0])
     print("\n\nPredictions:")
