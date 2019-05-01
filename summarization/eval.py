@@ -33,10 +33,11 @@ network = BertSummarizer(isCuda = _cuda)
 network.load_state_dict(torch.load(args.eval_model))
 network.eval()
 d, se, m, su, po = genBatch(bs=2, data=testing)
+_prev_word = torch.LongTensor([101]).cuda()
+_prev_word = _prev_word.repeat(bs, 1)
 with torch.no_grad():
     _d = network.forwardBert(d, se, m)
-    _hs = network.genHiddenState((d.size()[0], 768))
-    _prev_word = torch.LongTensor([101]).cuda()
+    _hs = network.genHiddenState((d.size()[0], 768))    
     gen_words = []
     gen_words.append(_prev_word)
     _all_previous_words = gen_words[0]
