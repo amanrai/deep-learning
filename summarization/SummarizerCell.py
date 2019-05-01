@@ -26,12 +26,6 @@ class Seq2SeqDecoderCell(torch.nn.Module):
                  tf = True,
                  isCuda = True):
         super(Seq2SeqDecoderCell, self).__init__()
-        self.bert_width = 768
-        self.bert_model = bert_model
-        if ("-large-" in bert_model):
-            self.bert_width = 1024
-        self.iscuda = isCuda
-        self.teacherForcing = tf
         
         self.gru = torch.nn.GRUCell(self.bert_width * 3, self.bert_width)
         self.attention_w = torch.nn.Linear(self.bert_width*2, attention_dim)
