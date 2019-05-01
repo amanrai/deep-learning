@@ -58,7 +58,7 @@ with torch.no_grad():
         _words = torch.topk(_words, 1, dim=-1)[1]
         gen_words.append(_prev_word)
     print("\n\nActuals")
-    print(su[:,0])
+    print(su)
     print("\n\nPredictions:")
     print(gen_words)
     
