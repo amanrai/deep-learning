@@ -13,40 +13,41 @@ import argparse
 
 
 parser = argparse.ArgumentParser(description='')
-parser.add_argument('--eval_model', 
-                    type=str, 
-                    help='model to continue training', 
+parser.add_argument('--eval_model',
+                    type=str,
+                    help='model to continue training',
                     default="summarizer_BestTrainingLoss.h5")
 
-parser.add_argument('--bs', 
-                    type=int, 
-                    help='batch size', 
+parser.add_argument('--bs',
+                    type=int,
+                    help='batch size',
                     default=1)
 
 args = parser.parse_args()
 
 testing = pickle.load(open("./network_testing.pickle", "rb"))
-print(len(testing))
+print("Total length of testing dataset:", len(testing))
 
 _cuda = torch.cuda.is_available()
 if (_cuda):
     print("Cuda is available:", torch.cuda.device_count(), "GPUs.")
 
-print("Loading Model...")    
+print("Loading Model...")
 
 network = BertSummarizer(isCuda = _cuda)
 network.load_state_dict(torch.load(args.eval_model))
 if (_cuda):
     network.cuda()
 network.eval()
-d, se, m, su, po = genBatch(bs=args.bs, 
+d, se, m, su, po = genBatch(bs=args.bs,
                             data=testing,
                             _cuda=_cuda)
 _prev_word = torch.LongTensor([101]).cuda()
 _prev_word = _prev_word.repeat(args.bs, 1)
+
 with torch.no_grad():
     _d = network.forwardBert(d, se, m)
-    _hs = network.genHiddenState((d.size()[0], 768))    
+    _hs = network.genHiddenState((d.size()[0], 768))
     gen_words = []
     beams = []
     gen_words.append(_prev_word)
@@ -69,4 +70,3 @@ with torch.no_grad():
     print("\n\n\nPotential Beams")
     beams = torch.stack(beams, dim=1)
     print(beams.detach().cpu().numpy())
-    
