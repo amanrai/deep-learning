@@ -25,6 +25,8 @@ parser.add_argument('--bs',
 
 args = parser.parse_args()
 
+print("This is purely for testing purposes...")
+
 testing = pickle.load(open("./network_testing.pickle", "rb"))
 print("Total length of testing dataset:", len(testing))
 
