@@ -2,6 +2,9 @@ import numpy as np
 import torch
 import json
 
+def pointLessFunction():
+	print("This is a pointless function!")
+
 def _save(model, cause, epoch_losses):
     print("\n\t\t...saving model for cause", cause)
     torch.save(model.state_dict(), "./summarizer_" + cause + ".h5")
